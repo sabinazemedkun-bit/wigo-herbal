@@ -1,7 +1,14 @@
 // WIGO Herbal — Express Server (Production-Hardened)
 'use strict';
 
-require('dotenv').config();
+// Load .env file only in local development.
+// On Vercel (and any production environment) env vars are injected
+// directly by the platform — requiring dotenv in production causes
+// "Cannot find module 'dotenv'" if the package isn't installed at
+// the root, and is unnecessary anyway.
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const express     = require('express');
 const cors        = require('cors');

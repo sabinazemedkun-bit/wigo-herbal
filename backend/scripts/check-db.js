@@ -11,7 +11,10 @@
 
 'use strict';
 
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+// Load .env for local dev only — production env vars are injected by the platform
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+}
 const mysql = require('mysql2/promise');
 
 const {
