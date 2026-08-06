@@ -118,8 +118,14 @@ async function login(req, res) {
     });
 
   } catch (err) {
-    console.error('Login error:', err.message || err);
-    return res.status(500).json({ success: false, message: 'Server error during login.' });
+    // Log the full error so it's visible in Vercel function logs
+    console.error('Login error:', err.code || '', err.message || err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error during login.',
+      // Show DB error details in non-production for easier debugging
+      detail : process.env.NODE_ENV !== 'production' ? err.message : undefined
+    });
   }
 }
 

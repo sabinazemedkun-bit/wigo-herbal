@@ -162,6 +162,27 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// Debug endpoint — checks env vars and DB connectivity
+// REMOVE THIS after confirming production works
+app.get('/api/debug', async (_req, res) => {
+  const { testConnection } = require('./config/database');
+  const dbOk = await testConnection();
+
+  res.json({
+    env: {
+      NODE_ENV    : process.env.NODE_ENV     || 'MISSING',
+      DB_HOST     : process.env.DB_HOST      ? process.env.DB_HOST.substring(0, 20) + '...' : 'MISSING',
+      DB_PORT     : process.env.DB_PORT      || 'MISSING',
+      DB_USER     : process.env.DB_USER      || 'MISSING',
+      DB_PASSWORD : process.env.DB_PASSWORD  ? `SET (${process.env.DB_PASSWORD.length} chars)` : 'MISSING',
+      DB_NAME     : process.env.DB_NAME      || 'MISSING',
+      JWT_SECRET  : process.env.JWT_SECRET   ? `SET (${process.env.JWT_SECRET.length} chars)` : 'MISSING',
+      ADMIN_EMAIL : process.env.ADMIN_EMAIL  || 'MISSING'
+    },
+    db_connected: dbOk
+  });
+});
+
 // ============================================================
 // 404 for unknown /api/* routes
 // ============================================================
