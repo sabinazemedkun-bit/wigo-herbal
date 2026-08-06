@@ -1,11 +1,8 @@
-// WIGO Herbal — Express Server (Production-Hardened)
+// WIGO Herbal — Express Server (Vercel Serverless + Local Dev)
 'use strict';
 
-// Load .env file only in local development.
-// On Vercel (and any production environment) env vars are injected
-// directly by the platform — requiring dotenv in production causes
-// "Cannot find module 'dotenv'" if the package isn't installed at
-// the root, and is unnecessary anyway.
+// Load .env only in local development.
+// Vercel injects env vars directly — dotenv is not needed in production.
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -17,92 +14,101 @@ const morgan      = require('morgan');
 const compression = require('compression');
 const path        = require('path');
 const rateLimit   = require('express-rate-limit');
-const fs          = require('fs');
 
-const app  = express();
-const PORT = process.env.PORT || 5000;
+const app    = express();
+const PORT   = process.env.PORT || 5000;
 const isProd = process.env.NODE_ENV === 'production';
 
 // ============================================================
-// Trust Proxy — required behind Nginx reverse proxy
+// Trust Proxy — required on Vercel and behind Nginx
 // ============================================================
-if (isProd) app.set('trust proxy', 1);
+app.set('trust proxy', 1);
 
 // ============================================================
-// Compression — gzip all responses
+// Compression
 // ============================================================
 app.use(compression({
-    level  : 6,
-    filter : (req, res) => {
-        if (req.headers['x-no-compression']) return false;
-        return compression.filter(req, res);
-    }
+  level : 6,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  }
 }));
 
 // ============================================================
 // Security Headers (Helmet)
+// Vercel serves frontend static files directly, so the CSP here
+// only needs to cover API responses — not page content.
 // ============================================================
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc : ["'self'"],
-            styleSrc   : ["'self'", "'unsafe-inline'",
-                          'https://fonts.googleapis.com',
-                          'https://cdnjs.cloudflare.com'],
-            fontSrc    : ["'self'", 'https://fonts.gstatic.com',
-                          'https://cdnjs.cloudflare.com', 'data:'],
-            scriptSrc  : ["'self'", "'unsafe-inline'",
-                          'https://cdnjs.cloudflare.com'],
-            imgSrc     : ["'self'", 'data:', 'https:', 'blob:'],
-            connectSrc : ["'self'"],
-            frameSrc   : ["'self'", 'https://www.google.com']
-        }
-    },
-    crossOriginEmbedderPolicy: false,
-    // HSTS — only in production (nginx also sets it)
-    hsts: isProd ? { maxAge: 31536000, includeSubDomains: true } : false
+  contentSecurityPolicy: false,   // CSP is handled in frontend HTML meta tags
+  crossOriginEmbedderPolicy: false,
+  hsts: isProd ? { maxAge: 31536000, includeSubDomains: true } : false
 }));
 
 // ============================================================
 // CORS
+// Covers:
+//  • Local dev            (localhost:5000, 127.0.0.1:5500)
+//  • Vercel preview URLs  (*.vercel.app)
+//  • Custom domain        (set FRONTEND_URL env var on Vercel)
 // ============================================================
+const VERCEL_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : null;
+
 const allowedOrigins = [
-    `https://${process.env.DOMAIN || 'wigoherbal.com'}`,
-    `https://www.${process.env.DOMAIN || 'wigoherbal.com'}`,
-    'http://localhost:5000',
-    'http://127.0.0.1:5000',
-    process.env.FRONTEND_URL
+  // Custom domain — set this in Vercel environment variables
+  process.env.FRONTEND_URL,
+  // Vercel auto-injects VERCEL_URL for the current deployment
+  VERCEL_URL,
+  // Allow all *.vercel.app preview deployments
+  /\.vercel\.app$/,
+  // Local development
+  'http://localhost:5000',
+  'http://localhost:3000',
+  'http://127.0.0.1:5000',
+  'http://127.0.0.1:5500',
 ].filter(Boolean);
 
 app.use(cors({
-    origin: (origin, cb) => {
-        // Allow requests with no origin (mobile apps, curl, Postman)
-        if (!origin) return cb(null, true);
-        if (allowedOrigins.includes(origin)) return cb(null, true);
-        cb(new Error(`CORS blocked: ${origin}`));
-    },
-    credentials  : true,
-    methods      : ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: (origin, cb) => {
+    // Allow requests with no origin (curl, Postman, mobile apps)
+    if (!origin) return cb(null, true);
+
+    // Check against static origins
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (allowed instanceof RegExp) return allowed.test(origin);
+      return allowed === origin;
+    });
+
+    if (isAllowed) return cb(null, true);
+
+    console.warn(`CORS blocked: ${origin}`);
+    cb(new Error(`CORS blocked: ${origin}`));
+  },
+  credentials  : true,
+  methods      : ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // ============================================================
 // Rate Limiting
 // ============================================================
 app.use('/api/', rateLimit({
-    windowMs         : 15 * 60 * 1000,
-    max              : isProd ? 100 : 500,
-    standardHeaders  : true,
-    legacyHeaders    : false,
-    message          : { success: false, message: 'Too many requests. Please try again later.' }
+  windowMs       : 15 * 60 * 1000,
+  max            : isProd ? 100 : 500,
+  standardHeaders: true,
+  legacyHeaders  : false,
+  message        : { success: false, message: 'Too many requests. Please try again later.' }
 }));
 
 app.use('/api/auth/login', rateLimit({
-    windowMs         : 15 * 60 * 1000,
-    max              : isProd ? 5 : 20,
-    standardHeaders  : true,
-    legacyHeaders    : false,
-    message          : { success: false, message: 'Too many login attempts. Please wait 15 minutes.' }
+  windowMs       : 15 * 60 * 1000,
+  max            : isProd ? 5 : 20,
+  standardHeaders: true,
+  legacyHeaders  : false,
+  message        : { success: false, message: 'Too many login attempts. Please wait 15 minutes.' }
 }));
 
 // ============================================================
@@ -113,40 +119,25 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // ============================================================
 // Logging
+// On Vercel there is no writable filesystem — always use stdout.
+// Morgan 'dev' for local, 'combined' for production (Vercel captures stdout).
 // ============================================================
-if (isProd) {
-    // In production: write combined logs to file
-    const logDir = '/var/log/wigo-herbal';
-    try {
-        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
-        const accessLog = fs.createWriteStream(
-            path.join(logDir, 'access.log'),
-            { flags: 'a' }
-        );
-        app.use(morgan('combined', { stream: accessLog }));
-    } catch {
-        // Fallback if log dir not writable (e.g. Windows dev)
-        app.use(morgan('combined'));
-    }
-} else {
-    app.use(morgan('dev'));
+app.use(morgan(isProd ? 'combined' : 'dev'));
+
+// ============================================================
+// Static Files
+// On Vercel, frontend/ is served directly by the CDN via vercel.json
+// routes — express.static is only used for local development.
+// ============================================================
+if (!isProd) {
+  app.use(express.static(path.join(__dirname, '../frontend'), {
+    index: 'index.html'
+  }));
+
+  app.use('/uploads', express.static(
+    path.join(__dirname, '../frontend/assets/images')
+  ));
 }
-
-// ============================================================
-// Static Files — serve entire frontend folder
-// ============================================================
-app.use(express.static(path.join(__dirname, '../frontend'), {
-    index   : 'index.html',
-    maxAge  : isProd ? '7d' : 0,   // cache static assets for 7 days in prod
-    etag    : true,
-    lastModified: true
-}));
-
-// Uploaded images
-app.use('/uploads', express.static(
-    path.join(__dirname, '../frontend/assets/images'),
-    { maxAge: isProd ? '30d' : 0 }
-));
 
 // ============================================================
 // API Routes
@@ -156,94 +147,80 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/services',     require('./routes/services'));
 app.use('/api/contact',      require('./routes/contact'));
 
-// Health check — used by load balancers & uptime monitors
+// Health check — used by uptime monitors and Vercel health checks
 app.get('/api/health', (_req, res) => {
-    res.json({
-        success  : true,
-        message  : 'WIGO Herbal API is running',
-        env      : process.env.NODE_ENV || 'development',
-        timestamp: new Date().toISOString()
-    });
+  res.json({
+    success  : true,
+    message  : 'WIGO Herbal API is running',
+    env      : process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // ============================================================
-// 404 for unknown API routes
+// 404 for unknown /api/* routes
 // ============================================================
 app.use('/api/*', (_req, res) => {
-    res.status(404).json({ success: false, message: 'API endpoint not found.' });
+  res.status(404).json({ success: false, message: 'API endpoint not found.' });
 });
 
 // ============================================================
-// SPA Fallback
-// Admin paths → admin/index.html
-// All others  → index.html
+// Admin + SPA Fallback (local dev only)
+// On Vercel these routes are handled by vercel.json → CDN/index.js.
+// In local dev we serve the HTML files directly from express.
 // ============================================================
-app.get('*', (req, res) => {
-    if (req.path.startsWith('/admin')) {
-        return res.sendFile(
-            path.join(__dirname, '../frontend/admin/index.html')
-        );
-    }
+if (!isProd) {
+  app.get('/admin*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
+  });
+
+  app.get('*', (_req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+  });
+}
 
 // ============================================================
 // Global Error Handler
 // ============================================================
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
-    // Don't log CORS errors as fatal
-    if (err.message && err.message.startsWith('CORS blocked')) {
-        return res.status(403).json({ success: false, message: 'Forbidden' });
-    }
+  if (err.message && err.message.startsWith('CORS blocked')) {
+    return res.status(403).json({ success: false, message: 'Forbidden.' });
+  }
 
-    console.error('Unhandled error:', err.message);
+  console.error('Unhandled error:', err.message || err);
 
-    if (err.message && err.message.includes('Only JPEG')) {
-        return res.status(400).json({ success: false, message: err.message });
-    }
-
-    res.status(err.status || 500).json({
-        success: false,
-        message: isProd ? 'Internal server error' : err.message
-    });
+  res.status(err.status || 500).json({
+    success: false,
+    message: isProd ? 'Internal server error.' : (err.message || 'Unknown error')
+  });
 });
 
 // ============================================================
-// Start Server (local dev) OR export app (Vercel/serverless)
+// Start Server (local dev) OR export app (Vercel serverless)
 // ============================================================
 if (require.main === module) {
-  // Running directly with node — start the HTTP server
   const server = app.listen(PORT, async () => {
     console.log(`\n🌿 WIGO Herbal Server running`);
-    console.log(`   URL:       http://localhost:${PORT}`);
-    console.log(`   API:       http://localhost:${PORT}/api`);
-    console.log(`   Admin:     http://localhost:${PORT}/admin/`);
-    console.log(`   Mode:      ${process.env.NODE_ENV || 'development'}\n`);
+    console.log(`   URL:   http://localhost:${PORT}`);
+    console.log(`   API:   http://localhost:${PORT}/api`);
+    console.log(`   Admin: http://localhost:${PORT}/admin/`);
+    console.log(`   Mode:  ${process.env.NODE_ENV || 'development'}\n`);
 
-    // Test DB connection AFTER the server is listening so a slow
-    // DB doesn't delay the port bind (important for PM2 health checks)
     const { testConnection } = require('./config/database');
     await testConnection();
   });
 
-  // Graceful shutdown — for PM2 / Docker
   process.on('SIGTERM', () => {
-    console.log('SIGTERM received — shutting down gracefully');
-    server.close(() => {
-      console.log('Server closed');
-      process.exit(0);
-    });
+    console.log('SIGTERM — shutting down gracefully');
+    server.close(() => process.exit(0));
   });
 
 } else {
-  // Imported as a module (Vercel serverless / index.js)
-  // Trigger a lazy DB test so the first cold-start log is informative
+  // Vercel serverless — test DB connection lazily (non-blocking)
   const { testConnection } = require('./config/database');
-  testConnection().catch(() => {/* already logged inside testConnection */});
-
-  console.log(`🌿 WIGO Herbal serverless | Mode: ${process.env.NODE_ENV || 'development'}`);
+  testConnection().catch(() => { /* already logged inside testConnection */ });
+  console.log(`🌿 WIGO Herbal serverless | ${process.env.NODE_ENV || 'development'}`);
 }
 
-// Export the Express app for Vercel
 module.exports = app;
