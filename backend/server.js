@@ -126,18 +126,21 @@ app.use(morgan(isProd ? 'combined' : 'dev'));
 
 // ============================================================
 // Static Files
-// On Vercel, serve the frontend/ folder for ALL environments.
-// Express handles static files for HTML pages and assets.
+// Uses process.cwd() as the base — on Vercel this resolves to
+// /var/task (the project root), so '../frontend' from backend/
+// or 'frontend' from root both work correctly.
 // ============================================================
-app.use(express.static(path.join(__dirname, '../frontend'), {
-  index  : 'index.html',
-  maxAge : isProd ? '7d' : 0,
-  etag   : true,
+const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
+
+app.use(express.static(FRONTEND_DIR, {
+  index       : 'index.html',
+  maxAge      : isProd ? '7d' : 0,
+  etag        : true,
   lastModified: true
 }));
 
 app.use('/uploads', express.static(
-  path.join(__dirname, '../frontend/assets/images'),
+  path.join(FRONTEND_DIR, 'assets', 'images'),
   { maxAge: isProd ? '30d' : 0 }
 ));
 
@@ -167,15 +170,14 @@ app.use('/api/*', (_req, res) => {
 });
 
 // ============================================================
-// Admin + SPA Fallback — serve HTML for all non-API routes
-// Works in both local dev and Vercel production.
+// Admin + SPA Fallback
 // ============================================================
 app.get('/admin*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
+  res.sendFile(path.join(FRONTEND_DIR, 'admin', 'index.html'));
 });
 
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
 // ============================================================

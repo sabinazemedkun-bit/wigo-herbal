@@ -4,21 +4,19 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "frontend/**",
+          "backend/**"
+        ]
+      }
     }
   ],
 
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/index.js"
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": "/index.js"
-    },
-    {
-      "source": "/admin",
+      "source": "/(.*)",
       "destination": "/index.js"
     }
   ]
