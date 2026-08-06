@@ -3,63 +3,23 @@
 
   "builds": [
     {
-      "src": "frontend/**",
-      "use": "@vercel/static"
-    },
-    {
       "src": "index.js",
       "use": "@vercel/node"
     }
   ],
 
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/index.js"
+      "source": "/api/:path*",
+      "destination": "/index.js"
     },
     {
-      "src": "/admin(.*)",
-      "dest": "/index.js"
+      "source": "/admin/:path*",
+      "destination": "/index.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "/index.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/frontend/assets/$1"
-    },
-    {
-      "src": "/css/(.*)",
-      "dest": "/frontend/css/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/frontend/js/$1"
-    },
-    {
-      "src": "/sitemap\\.xml",
-      "dest": "/frontend/sitemap.xml"
-    },
-    {
-      "src": "/robots\\.txt",
-      "dest": "/frontend/robots.txt"
-    },
-    {
-      "src": "/(about|services|contact|appointment|address|gallery)\\.html",
-      "dest": "/frontend/$1.html"
-    },
-    {
-      "src": "/(.*)\\.html",
-      "dest": "/frontend/$1.html"
-    },
-    {
-      "src": "/",
-      "dest": "/frontend/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.js"
+      "source": "/admin",
+      "destination": "/index.js"
     }
   ]
 }

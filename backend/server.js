@@ -126,18 +126,20 @@ app.use(morgan(isProd ? 'combined' : 'dev'));
 
 // ============================================================
 // Static Files
-// On Vercel, frontend/ is served directly by the CDN via vercel.json
-// routes — express.static is only used for local development.
+// On Vercel, serve the frontend/ folder for ALL environments.
+// Express handles static files for HTML pages and assets.
 // ============================================================
-if (!isProd) {
-  app.use(express.static(path.join(__dirname, '../frontend'), {
-    index: 'index.html'
-  }));
+app.use(express.static(path.join(__dirname, '../frontend'), {
+  index  : 'index.html',
+  maxAge : isProd ? '7d' : 0,
+  etag   : true,
+  lastModified: true
+}));
 
-  app.use('/uploads', express.static(
-    path.join(__dirname, '../frontend/assets/images')
-  ));
-}
+app.use('/uploads', express.static(
+  path.join(__dirname, '../frontend/assets/images'),
+  { maxAge: isProd ? '30d' : 0 }
+));
 
 // ============================================================
 // API Routes
@@ -165,19 +167,16 @@ app.use('/api/*', (_req, res) => {
 });
 
 // ============================================================
-// Admin + SPA Fallback (local dev only)
-// On Vercel these routes are handled by vercel.json → CDN/index.js.
-// In local dev we serve the HTML files directly from express.
+// Admin + SPA Fallback — serve HTML for all non-API routes
+// Works in both local dev and Vercel production.
 // ============================================================
-if (!isProd) {
-  app.get('/admin*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
-  });
+app.get('/admin*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/admin/index.html'));
+});
 
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-  });
-}
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 // ============================================================
 // Global Error Handler
