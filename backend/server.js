@@ -40,9 +40,12 @@ app.use(helmet({
         directives: {
             defaultSrc : ["'self'"],
             styleSrc   : ["'self'", "'unsafe-inline'",
-                          'https://fonts.googleapis.com'],
-            fontSrc    : ["'self'", 'https://fonts.gstatic.com', 'data:'],
-            scriptSrc  : ["'self'", "'unsafe-inline'"],
+                          'https://fonts.googleapis.com',
+                          'https://cdnjs.cloudflare.com'],
+            fontSrc    : ["'self'", 'https://fonts.gstatic.com',
+                          'https://cdnjs.cloudflare.com', 'data:'],
+            scriptSrc  : ["'self'", "'unsafe-inline'",
+                          'https://cdnjs.cloudflare.com'],
             imgSrc     : ["'self'", 'data:', 'https:', 'blob:'],
             connectSrc : ["'self'"],
             frameSrc   : ["'self'", 'https://www.google.com']

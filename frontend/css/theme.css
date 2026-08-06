@@ -300,30 +300,98 @@ body {
   backdrop-filter: blur(var(--glass-blur));
 }
 
+/* Force nav link colours — must override the global li/a cascade */
 .navbar-menu li a,
-.navbar-menu li a:visited {
-  color: var(--nav-text);
+.navbar-menu li a:visited,
+.navbar-menu li > a {
+  color: var(--nav-text) !important;
+  text-decoration: none;
 }
 
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
-  background-color: var(--nav-hover-bg);
-  color: var(--nav-hover-text);
+  background-color: var(--nav-hover-bg) !important;
+  color: var(--nav-hover-text) !important;
 }
 
+/* Prevent li color from bleeding into links */
+.navbar-menu li,
 .navbar-menu > li {
-  color: inherit;
+  color: var(--nav-text);
 }
 
+/* Brand text */
 .brand-text { color: var(--green-primary); }
+.navbar-brand { color: var(--green-primary); }
 
-/* Mobile nav */
+/* Hamburger icon */
+.navbar-toggle {
+  color: var(--green-primary);
+}
+
+/* Mobile nav dropdown inherits correct background */
 @media (max-width: 768px) {
   .navbar-menu {
     background-color: var(--nav-bg);
     border-top: 1px solid var(--nav-border);
   }
 }
+
+/* ── Language switcher ───────────────────────────────── */
+.lang-switcher {
+  background-color: var(--lang-bg);
+  border-color: var(--card-border);
+}
+
+.lang-btn {
+  color: var(--lang-btn-text);
+}
+
+.lang-btn.active {
+  background-color: var(--lang-active-bg);
+  color: var(--lang-active-text);
+}
+
+/* ── Theme Toggle ────────────────────────────────────── */
+/* Sizing and layout defined in global.css — only colours here */
+.theme-toggle-btn {
+  border-color: var(--btn-outline-border);
+  color: var(--toggle-icon);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-color: var(--btn-primary-bg);
+}
+
+/* Track */
+.toggle-track,
+.theme-toggle-btn .toggle-track {
+  background-color: var(--toggle-track-off);
+}
+
+[data-theme="dark"] .toggle-track,
+[data-theme="dark"] .theme-toggle-btn .toggle-track {
+  background-color: var(--toggle-track-on);
+}
+
+/* Thumb */
+.toggle-thumb,
+.theme-toggle-btn .toggle-thumb {
+  background: var(--toggle-thumb);
+}
+
+[data-theme="dark"] .toggle-thumb,
+[data-theme="dark"] .theme-toggle-btn .toggle-thumb {
+  transform: translateX(14px);
+}
+
+/* Icons */
+.toggle-icon-sun,
+.theme-toggle-btn .toggle-icon-sun  { color: var(--gold); }
+.toggle-icon-moon,
+.theme-toggle-btn .toggle-icon-moon { color: #90CAF9; }
 
 /* ── Scroll progress bar ─────────────────────────────── */
 .scroll-progress-bar {
@@ -337,83 +405,6 @@ body {
   transition: width 0.1s linear;
   pointer-events: none;
 }
-
-/* ── Language switcher ───────────────────────────────── */
-.lang-switcher {
-  background-color: var(--lang-bg);
-  border: 1.5px solid var(--card-border);
-}
-
-.lang-btn {
-  color: var(--lang-btn-text);
-}
-
-.lang-btn.active {
-  background-color: var(--lang-active-bg);
-  color: var(--lang-active-text);
-}
-
-/* ── Theme Toggle ────────────────────────────────────── */
-.theme-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: 2px solid var(--btn-outline-border);
-  color: var(--toggle-icon);
-  padding: 6px 14px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.82rem;
-  font-family: 'Poppins', sans-serif;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  white-space: nowrap;
-}
-
-.theme-toggle-btn:hover {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border-color: var(--btn-primary-bg);
-}
-
-.theme-toggle-btn .toggle-track {
-  width: 34px;
-  height: 18px;
-  border-radius: 9px;
-  background-color: var(--toggle-track-off);
-  position: relative;
-  flex-shrink: 0;
-  transition: background 0.3s;
-}
-
-[data-theme="dark"] .theme-toggle-btn .toggle-track {
-  background-color: var(--toggle-track-on);
-}
-
-.theme-toggle-btn .toggle-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--toggle-thumb);
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-
-[data-theme="dark"] .theme-toggle-btn .toggle-thumb {
-  transform: translateX(16px);
-}
-
-.theme-toggle-btn .toggle-icon-sun,
-.theme-toggle-btn .toggle-icon-moon {
-  font-size: 0.9rem;
-}
-
-.theme-toggle-btn .toggle-icon-sun  { color: var(--gold); }
-.theme-toggle-btn .toggle-icon-moon { color: #90CAF9; }
 
 /* ── Section backgrounds ─────────────────────────────── */
 .section-light, .section.section-light {
