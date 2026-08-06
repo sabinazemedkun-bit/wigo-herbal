@@ -124,7 +124,7 @@ Host:     mysql-wigo-herbal-xxxx.aivencloud.com
 Port:     12345  (Aiven uses non-standard ports)
 Database: defaultdb
 Username: avnadmin
-Password: AVNS_xxxxxxxxxxxxxxxxxx
+Password: your_aiven_password_here
 ```
 
 ### 2.4 Enable SSL for Aiven connection
@@ -199,7 +199,7 @@ Click **Add Environment Variable** and add each one:
 | `DB_HOST` | `mysql-wigo-herbal-xxxx.aivencloud.com` | From Aiven Step 2.3 |
 | `DB_PORT` | `12345` | From Aiven Step 2.3 (your actual port) |
 | `DB_USER` | `avnadmin` | From Aiven Step 2.3 |
-| `DB_PASSWORD` | `AVNS_xxxxxxxxxxxxxxxxxx` | From Aiven Step 2.3 |
+| `DB_PASSWORD` | ` your_aiven_password_here` | From Aiven Step 2.3 |
 | `DB_NAME` | `defaultdb` | From Aiven Step 2.3 |
 | `DB_SSL` | `true` | Required for Aiven |
 | `JWT_SECRET` | *(generated below)* | Must be strong and secret |
