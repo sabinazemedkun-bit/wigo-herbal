@@ -200,23 +200,31 @@ app.use((err, _req, res, _next) => {
 });
 
 // ============================================================
-// Graceful Shutdown — for PM2 / Docker
+// Start Server (local dev) OR export app (Vercel/serverless)
 // ============================================================
-process.on('SIGTERM', () => {
-    console.log('SIGTERM received — shutting down gracefully');
-    server.close(() => {
-        console.log('Server closed');
-        process.exit(0);
-    });
-});
-
-// ============================================================
-// Start Server
-// ============================================================
-const server = app.listen(PORT, () => {
+if (require.main === module) {
+  // Running directly with node — start the HTTP server
+  const server = app.listen(PORT, () => {
     console.log(`\n🌿 WIGO Herbal Server running`);
     console.log(`   URL:       http://localhost:${PORT}`);
     console.log(`   API:       http://localhost:${PORT}/api`);
     console.log(`   Admin:     http://localhost:${PORT}/admin/`);
     console.log(`   Mode:      ${process.env.NODE_ENV || 'development'}\n`);
-});
+  });
+
+  // Graceful shutdown — for PM2 / Docker
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received — shutting down gracefully');
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+  });
+
+} else {
+  // Imported as a module (Vercel serverless / index.js)
+  console.log(`🌿 WIGO Herbal running in serverless mode | Mode: ${process.env.NODE_ENV || 'development'}`);
+}
+
+// Export the Express app for Vercel
+module.exports = app;
