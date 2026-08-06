@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WIGO Herbal Gallery — Medicinal plants used in Ethiopian traditional herbal medicine | ዊጎ ጋለሪ — ባህላዊ የሕክምና ዕፅዋት">
+  <link rel="icon" type="image/png" href="./assets/logo/wigo-logo.png">
+  <title>Gallery | WIGO Herbal Traditional Medical Services</title>
+  <script>(function(){var t=localStorage.getItem('wigoTheme');if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/libs/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="./assets/libs/aos/aos.css">
+  <link rel="stylesheet" href="./css/fonts.css">
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/gallery.css">
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="pageLoader" class="page-loader" role="status" aria-label="Loading gallery">
+  <div class="loader-inner">
+    <div class="loader-ring"></div>
+    <span class="loader-text" data-en="Loading Gallery…" data-am="ጋለሪ እየጫነ ነው…">Loading Gallery…</span>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="navbar-container">
+    <a href="index.html" class="navbar-brand">
+      <img src="./assets/logo/wigo-logo.png" alt="WIGO Herbal Logo" class="navbar-logo"
+           onerror="this.onerror=null;this.src='./assets/logo/wigo-logo.jpg';this.onerror=function(){this.src='';this.parentElement.classList.add('logo-fallback')}">
+      <span class="brand-text">WIGO Herbs</span>
+    </a>
+    <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+      <i class="fas fa-bars" aria-hidden="true"></i>
+    </button>
+    <ul class="navbar-menu" id="navMenu" role="list">
+      <li><a href="index.html" data-en="Home" data-am="መነሻ">Home</a></li>
+      <li><a href="about.html" data-en="About Us" data-am="ስለ እኛ">About Us</a></li>
+      <li><a href="services.html" data-en="Services" data-am="አገልግሎቶች">Services</a></li>
+      <li><a href="address.html" data-en="Address" data-am="አድራሻ">Address</a></li>
+      <li><a href="appointment.html" data-en="Appointment" data-am="ቀጠሮ">Appointment</a></li>
+      <li><a href="contact.html" data-en="Contact" data-am="ያግኙን">Contact</a></li>
+      <li class="lang-switcher-wrap">
+        <div class="lang-switcher" role="group" aria-label="Language selector">
+          <button class="lang-btn active" data-lang="en" aria-label="Switch to English"><span class="lang-flag">🇺🇸</span> EN</button>
+          <button class="lang-btn" data-lang="am" aria-label="ወደ አማርኛ ቀይር"><span class="lang-flag">🇪🇹</span> አማ</button>
+        </div>
+      </li>
+      <li class="theme-toggle-wrap">
+        <button class="theme-toggle-btn" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+          <i class="fas fa-sun toggle-icon-sun" aria-hidden="true"></i>
+          <i class="fas fa-moon toggle-icon-moon" aria-hidden="true" style="display:none"></i>
+          <span class="toggle-label">Dark</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="gallery-hero">
+  <div class="gallery-hero-content" data-aos="fade-up">
+    <h1 data-en="Medicinal Plant Gallery" data-am="የመድኃኒት ዕፅዋት ጋለሪ">Medicinal Plant Gallery</h1>
+    <p data-en="Discover the healing plants behind WIGO's traditional herbal medicine"
+       data-am="የዊጎ ባህላዊ የዕፅዋት ሕክምና መሠረት የሆኑ ፈዋሽ ዕፅዋትን ያስሱ">
+      Discover the healing plants behind WIGO's traditional herbal medicine
+    </p>
+    <div class="gallery-count-badge">
+      <i class="fas fa-seedling" aria-hidden="true"></i>
+      <span id="resultCount">16</span>
+      <span data-en="plants" data-am="ዕፅዋቶች">plants</span>
+    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href="index.html" data-en="Home" data-am="መነሻ">Home</a></li>
+        <li><span data-en="Gallery" data-am="ጋለሪ">Gallery</span></li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- CONTROLS -->
+<div class="gallery-controls" id="galleryControls">
+  <div class="container">
+    <div class="gallery-search-wrap" role="search">
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
+      <input type="search" id="gallerySearch" class="search-input"
+             data-en="Search plants by name or use…" data-am="ዕፅዋቶቹን በስም ወይም አጠቃቀም ይፈልጉ…"
+             placeholder="Search plants by name or use…"
+             aria-label="Search plants" autocomplete="off">
+      <button class="search-clear-btn" id="galleryClear" aria-label="Clear search" style="display:none">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="gallery-filters" role="group" aria-label="Filter by category">
+      <button class="gallery-filter-btn active" data-filter="all" aria-pressed="true">
+        <i class="fas fa-th" aria-hidden="true"></i>
+        <span data-en="All" data-am="ሁሉም">All</span>
+      </button>
+      <button class="gallery-filter-btn" data-filter="medicinal" aria-pressed="false">
+        <i class="fas fa-mortar-pestle" aria-hidden="true"></i>
+        <span data-en="Medicinal" data-am="መድኃኒታዊ">Medicinal</span>
+      </button>
+      <button class="gallery-filter-btn" data-filter="digestive" aria-pressed="false">
+        <i class="fas fa-leaf" aria-hidden="true"></i>
+        <span data-en="Digestive" data-am="ምግብ መፈጨት">Digestive</span>
+      </button>
+      <button class="gallery-filter-btn" data-filter="respiratory" aria-pressed="false">
+        <i class="fas fa-lungs" aria-hidden="true"></i>
+        <span data-en="Respiratory" data-am="መተንፈሻ">Respiratory</span>
+      </button>
+      <button class="gallery-filter-btn" data-filter="skin" aria-pressed="false">
+        <i class="fas fa-hand-sparkles" aria-hidden="true"></i>
+        <span data-en="Skin Care" data-am="የቆዳ እንክብካቤ">Skin Care</span>
+      </button>
+      <button class="gallery-filter-btn" data-filter="nutritional" aria-pressed="false">
+        <i class="fas fa-seedling" aria-hidden="true"></i>
+        <span data-en="Nutritional" data-am="አመጋገብ">Nutritional</span>
+      </button>
+    </div>
+    <p class="gallery-result-info" aria-live="polite">
+      <span data-en="Showing" data-am="ማሳያ">Showing</span>
+      <strong id="resultCount2">16</strong>
+      <span data-en="plants" data-am="ዕፅዋቶች">plants</span>
+    </p>
+  </div>
+</div>
+
+<!-- GALLERY GRID -->
+<section class="gallery-section section" aria-label="Gallery grid">
+  <div class="container">
+    <div class="gallery-grid" id="galleryGrid" role="list" aria-label="Medicinal plant gallery"></div>
+    <div class="no-results" id="noResults" aria-live="polite" role="status">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <h3 data-en="No Plants Found" data-am="ዕፅዋቶች አልተገኙም">No Plants Found</h3>
+      <p data-en="Try a different search term or category filter." data-am="ሌላ የፍለጋ ቃል ወይም ምድብ ይሞክሩ።">Try a different search term or category filter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Plant image viewer" aria-hidden="true">
+  <div class="lightbox-inner">
+    <div class="lightbox-topbar">
+      <span class="lb-counter" id="lbCounter">1 / 16</span>
+      <button class="lb-close-btn" id="lbClose" aria-label="Close image viewer">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="lightbox-img-row">
+      <button class="lb-arrow" id="lbPrev" aria-label="Previous plant">
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <div class="lb-img-wrap">
+        <img id="lbImg" src="" alt="" loading="lazy" draggable="false">
+      </div>
+      <button class="lb-arrow" id="lbNext" aria-label="Next plant">
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="lightbox-caption" id="lbCaption">
+      <h3 class="lb-name" id="lbName"></h3>
+      <p class="lb-am" id="lbAm"></p>
+      <p class="lb-sci" id="lbSci"></p>
+      <div class="lb-details">
+        <div class="lb-detail-item">
+          <span class="lb-detail-label" data-en="Traditional Use" data-am="ባህላዊ አጠቃቀም">Traditional Use</span>
+          <span class="lb-detail-value" id="lbUse"></span>
+        </div>
+        <div class="lb-detail-item">
+          <span class="lb-detail-label" data-en="Diseases Treated" data-am="የሚታከሙ በሽታዎች">Diseases Treated</span>
+          <span class="lb-detail-value" id="lbDis"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-logo">
+      <img src="./assets/logo/wigo-logo.png" alt="WIGO Herbal Logo"
+           onerror="this.onerror=null;this.src='./assets/logo/wigo-logo.jpg'">
+    </div>
+    <div class="footer-tagline" data-en="WIGO Herbal Traditional Medical Services" data-am="ዊጎ ባህላዊ የዕፅዋት ሕክምና አገልግሎት">WIGO Herbal Traditional Medical Services</div>
+    <div class="footer-subtitle" data-en="Natural Healing for a Healthier Life" data-am="በተፈጥሮ ሕክምና ጤናማ ሕይወት">Natural Healing for a Healthier Life</div>
+    <div class="footer-hours">
+      <i class="fas fa-clock" aria-hidden="true"></i>
+      <span data-en="Mon–Sat: 8:00 AM – 5:00 PM &nbsp;|&nbsp; Sun: 8:00 AM – 12:00 PM"
+            data-am="ሰኞ–ቅዳሜ: ከጠዋቱ 2:00 – ከምሽቱ 11:00 &nbsp;|&nbsp; እሁድ: ከጠዋቱ 2:00 – ከቀኑ 6:00"
+            data-html="true">Mon–Sat: 8:00 AM – 5:00 PM &nbsp;|&nbsp; Sun: 8:00 AM – 12:00 PM</span>
+    </div>
+    <div class="footer-heart">
+      <span>❤️</span>
+      <span data-en="WIGO Herbs – For Public Health, We Care" data-am="WIGO Herbs – ለሕዝብ ጤና እንተጋለን">WIGO Herbs – For Public Health, We Care</span>
+    </div>
+    <div class="footer-copyright" data-en="© 2026 WIGO Herbal Traditional Medical Services. All Rights Reserved." data-am="© 2026 ዊጎ ባህላዊ የዕፅዋት ሕክምና አገልግሎት። ሁሉም መብቶች የተጠበቁ ናቸው።">© 2026 WIGO Herbal Traditional Medical Services. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+
+<script src="./assets/libs/aos/aos.js"></script>
+<script src="./js/theme.js"></script>
+<script src="./js/language.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/gallery.js"></script>
+<script>AOS.init({ duration: 700, once: true, offset: 0 });</script>
+</body>
+</html>

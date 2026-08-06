@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WIGO Herbal Medical Services - 19 professional herbal treatments for pain, kidney, respiratory, skin, and more | ዊጎ ሕክምና አገልግሎቶች">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://wigoherbal.com/services.html">
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://wigoherbal.com/services.html">
+    <meta property="og:title"       content="Our Services | WIGO Herbal Traditional Medical Services">
+    <meta property="og:description" content="19 traditional herbal treatments including waist pain, kidney, respiratory, skin, and more.">
+    <meta property="og:image"       content="https://wigoherbal.com/assets/logo/wigo-logo.png">
+    <link rel="icon" type="image/png" href="./assets/logo/wigo-logo.png">
+    <title>Services | WIGO Herbal Traditional Medical Services</title>
+    <script>(function(){var t=localStorage.getItem('wigoTheme');if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/libs/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="./assets/libs/aos/aos.css">
+    <link rel="stylesheet" href="./css/fonts.css">
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/theme.css">
+    <link rel="stylesheet" href="./css/services.css">
+</head>
+<body>
+
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+    <div class="navbar-container">
+        <a href="index.html" class="navbar-brand">
+            <img src="./assets/logo/wigo-logo.png" alt="WIGO Herbal Logo" class="navbar-logo"
+                 onerror="this.onerror=null;this.src='./assets/logo/wigo-logo.jpg';this.onerror=function(){this.src='';this.parentElement.classList.add('logo-fallback')}">
+            <span class="brand-text">WIGO Herbs</span>
+        </a>
+        <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+        <ul class="navbar-menu" id="navMenu" role="list">
+            <li><a href="index.html" data-en="Home" data-am="መነሻ">Home</a></li>
+            <li><a href="about.html" data-en="About Us" data-am="ስለ እኛ">About Us</a></li>
+            <li><a href="services.html" class="active" data-en="Services" data-am="አገልግሎቶች">Services</a></li>
+            <li><a href="address.html" data-en="Address" data-am="አድራሻ">Address</a></li>
+            <li><a href="appointment.html" data-en="Appointment" data-am="ቀጠሮ">Appointment</a></li>
+            <li><a href="contact.html" data-en="Contact" data-am="ያግኙን">Contact</a></li>
+            <li class="lang-switcher-wrap">
+                <div class="lang-switcher" role="group" aria-label="Language selector">
+                    <button class="lang-btn active" data-lang="en" aria-label="Switch to English"><span class="lang-flag">🇺🇸</span> EN</button>
+                    <button class="lang-btn" data-lang="am" aria-label="ወደ አማርኛ ቀይር"><span class="lang-flag">🇪🇹</span> አማ</button>
+                </div>
+            </li>
+            <li class="theme-toggle-wrap">
+                <button class="theme-toggle-btn" aria-label="Switch to dark mode" aria-pressed="false">
+                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                    <i class="fas fa-sun toggle-icon-sun" aria-hidden="true"></i>
+                    <i class="fas fa-moon toggle-icon-moon" aria-hidden="true" style="display:none"></i>
+                    <span class="toggle-label">Dark</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content" data-aos="fade-up">
+        <h1 data-en="Our Medical Services" data-am="የሕክምና አገልግሎቶቻችን">Our Medical Services</h1>
+        <p data-en="Professional Ethiopian Herbal Treatment for Natural Healing" data-am="በባህላዊ ኢትዮጵያዊ የእፅዋት ሕክምና የተፈጥሮ ፈውስ">Professional Ethiopian Herbal Treatment for Natural Healing</p>
+        <div class="service-count">
+            <span id="totalServices">19</span>
+            <span data-en="Services Available" data-am="አገልግሎቶች አሉ">Services Available</span>
+        </div>
+    </div>
+</section>
+
+<!-- SEARCH -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-box" data-aos="fade-up">
+            <i class="fas fa-search"></i>
+            <input type="text" id="serviceSearch" class="search-input"
+                   data-en="Search services..." data-am="አገልግሎት ይፈልጉ..."
+                   placeholder="Search services...">
+            <button class="search-clear" id="clearSearch" style="display:none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES GRID -->
+<section class="section services-section">
+    <div class="container">
+        <div class="services-grid" id="servicesGrid"></div>
+        <div class="no-results" id="noResults" style="display:none;">
+            <i class="fas fa-search"></i>
+            <h3 data-en="No services found" data-am="ምንም አገልግሎት አልተገኘም">No services found</h3>
+            <p data-en="Try a different search term" data-am="ሌላ የፍለጋ ቃል ይሞክሩ">Try a different search term</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <img src="./assets/logo/wigo-logo.png" alt="WIGO Herbal Logo"
+                 onerror="this.onerror=null;this.src='./assets/logo/wigo-logo.jpg'">
+        </div>
+        <div class="footer-tagline" data-en="WIGO Herbal Traditional Medical Services" data-am="ዊጎ ባህላዊ የዕፅዋት ሕክምና አገልግሎት">WIGO Herbal Traditional Medical Services</div>
+        <div class="footer-subtitle" data-en="Natural Healing for a Healthier Life" data-am="በተፈጥሮ ሕክምና ጤናማ ሕይወት">Natural Healing for a Healthier Life</div>
+        <div class="footer-hours">
+            <i class="fas fa-clock"></i>
+            <span data-en="Mon–Sat: 8:00 AM – 5:00 PM &nbsp;|&nbsp; Sun: 8:00 AM – 12:00 PM" data-am="ሰኞ–ቅዳሜ: ከጠዋቱ 2:00 – ከምሽቱ 11:00 &nbsp;|&nbsp; እሁድ: ከጠዋቱ 2:00 – ከቀኑ 6:00" data-html="true">Mon–Sat: 8:00 AM – 5:00 PM &nbsp;|&nbsp; Sun: 8:00 AM – 12:00 PM</span>
+        </div>
+        <div class="footer-heart"><span>❤️</span> <span data-en="WIGO Herbs – For Public Health, We Care" data-am="WIGO Herbs – ለሕዝብ ጤና እንተጋለን">WIGO Herbs – For Public Health, We Care</span></div>
+        <div class="footer-copyright" data-en="© 2026 WIGO Herbal Traditional Medical Services. All Rights Reserved." data-am="© 2026 ዊጎ ባህላዊ የዕፅዋት ሕክምና አገልግሎት። ሁሉም መብቶች የተጠበቁ ናቸው።">© 2026 WIGO Herbal Traditional Medical Services. All Rights Reserved.</div>
+    </div>
+</footer>
+<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<script src="./assets/libs/aos/aos.js"></script>
+<script src="./js/theme.js"></script>
+<script src="./js/language.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/services.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 0 });</script>
+</body>
+</html>

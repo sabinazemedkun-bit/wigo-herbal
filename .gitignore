@@ -1,0 +1,56 @@
+# ============================================================
+# WIGO Herbal — .gitignore
+# ============================================================
+
+# ── Node.js ──────────────────────────────────────────────────
+node_modules/
+backend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# ── Environment / Secrets — NEVER commit these ───────────────
+.env
+.env.local
+.env.production
+.env.*.local
+backend/.env
+backend/.env.*
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+/var/log/
+
+# ── OS files ─────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Build / Deploy artifacts ─────────────────────────────────
+dist/
+build/
+.cache/
+
+# ── PM2 runtime files ────────────────────────────────────────
+.pm2/
+
+# ── Uploaded user files (store on server, not in git) ────────
+frontend/assets/images/uploads/
+
+# ── Test coverage ────────────────────────────────────────────
+coverage/
+.nyc_output/

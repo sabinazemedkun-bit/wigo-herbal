@@ -1,0 +1,333 @@
+/* Services Page Styles */
+
+/* ============================================
+   Page Hero
+============================================ */
+.page-hero {
+    position: relative;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--emerald-green) 100%);
+    overflow: hidden;
+}
+
+.page-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.page-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: var(--white);
+    padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.page-hero h1 {
+    font-size: 3rem;
+    color: var(--white);
+    margin-bottom: var(--spacing-sm);
+}
+
+.page-hero p {
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.service-count {
+    display: inline-flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-md);
+}
+
+.service-count span:first-child {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.service-count span:last-child {
+    font-size: 1rem;
+    color: var(--secondary-green);
+}
+
+/* ============================================
+   Search Section
+============================================ */
+.search-section {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--light-gray);
+}
+
+.search-box {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.search-box i.fa-search {
+    color: var(--primary-green);
+    font-size: 1.3rem;
+    margin-right: var(--spacing-sm);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    font-family: inherit;
+}
+
+.search-clear {
+    background: none;
+    border: none;
+    color: var(--dark-gray);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: var(--transition-fast);
+}
+
+.search-clear:hover {
+    color: var(--error);
+}
+
+/* ============================================
+   Services Grid
+============================================ */
+.services-section {
+    padding: var(--spacing-2xl) 0;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.service-card {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-green), var(--emerald-green));
+    transform: scaleX(0);
+    transition: var(--transition-normal);
+}
+
+.service-card:hover::before {
+    transform: scaleX(1);
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-green);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    transition: var(--transition-normal);
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.service-icon i {
+    font-size: 2rem;
+    color: var(--primary-green);
+}
+
+.service-number {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background-color: var(--primary-green);
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.service-title {
+    font-size: 1.3rem;
+    color: var(--primary-green);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.service-title-am {
+    font-size: 1.1rem;
+    color: var(--accent-green);
+    margin-bottom: var(--spacing-md);
+    font-family: 'Noto Sans Ethiopic', sans-serif;
+}
+
+.service-description {
+    color: var(--dark-gray);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-md);
+    flex-grow: 1;
+}
+
+.service-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: auto;
+}
+
+.service-actions .btn {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-outline-sm {
+    background-color: transparent;
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+}
+
+.btn-outline-sm:hover {
+    background-color: var(--primary-green);
+    color: var(--white);
+}
+
+/* ============================================
+   No Results
+============================================ */
+.no-results {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--dark-gray);
+}
+
+.no-results i {
+    font-size: 4rem;
+    color: var(--gray);
+    margin-bottom: var(--spacing-md);
+}
+
+.no-results h3 {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.no-results p {
+    font-size: 1.1rem;
+    color: var(--gray);
+}
+
+/* ============================================
+   Service Icons by Category
+============================================ */
+.icon-pain { background: linear-gradient(135deg, #FFE5E5, #FF6B6B); }
+.icon-kidney { background: linear-gradient(135deg, #E3F2FD, #2196F3); }
+.icon-stomach { background: linear-gradient(135deg, #FFF3E0, #FF9800); }
+.icon-nerve { background: linear-gradient(135deg, #F3E5F5, #9C27B0); }
+.icon-uterus { background: linear-gradient(135deg, #FCE4EC, #E91E63); }
+.icon-respiratory { background: linear-gradient(135deg, #E0F7FA, #00BCD4); }
+.icon-skin { background: linear-gradient(135deg, #FFF9C4, #FDD835); }
+.icon-eye { background: linear-gradient(135deg, #E8EAF6, #3F51B5); }
+.icon-brain { background: linear-gradient(135deg, #F1F8E9, #8BC34A); }
+.icon-bone { background: linear-gradient(135deg, #EFEBE9, #795548); }
+.icon-other { background: linear-gradient(135deg, var(--secondary-green), var(--primary-green)); }
+
+/* ============================================
+   Responsive Design
+============================================ */
+@media (max-width: 992px) {
+    .page-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .page-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .page-hero p {
+        font-size: 1.1rem;
+    }
+    
+    .service-count span:first-child {
+        font-size: 2.5rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .search-box {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .search-input {
+        font-size: 1rem;
+    }
+    
+    .service-card {
+        padding: var(--spacing-md);
+    }
+}

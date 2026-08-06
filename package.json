@@ -1,0 +1,21 @@
+{
+  "name": "wigo-herbal",
+  "version": "1.0.0",
+  "description": "WIGO Herbal Traditional Medical Services",
+  "main": "backend/server.js",
+  "scripts": {
+    "start"   : "node backend/server.js",
+    "dev"     : "cd backend && nodemon server.js",
+    "setup"   : "node backend/scripts/setup-db.js",
+    "check:db": "node backend/scripts/check-db.js",
+    "build"   : "cd backend && npm install --omit=dev"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm" : ">=10.0.0"
+  },
+  "keywords": ["herbal", "medicine", "ethiopia", "addis-ababa"],
+  "author": "WIGO Herbal",
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420" width="500" height="420">
+  <!-- White background -->
+  <rect width="500" height="420" fill="white"/>
+
+  <!-- ══════════════════════════════════════
+       Caduceus / medical staff (center-left)
+  ══════════════════════════════════════ -->
+  <g transform="translate(218,60)">
+    <!-- Staff -->
+    <rect x="-3" y="0" width="6" height="160" rx="3" fill="#5a8a3c"/>
+    <!-- Snakes (stylised S-curves) -->
+    <path d="M-3,20 C-22,35 -22,55 0,65 C22,75 22,95 3,110" stroke="#5a8a3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M3,20 C22,35 22,55 0,65 C-22,75 -22,95 -3,110" stroke="#5a8a3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Top wings -->
+    <path d="M0,2 C-30,-10 -50,8 -30,20" stroke="#5a8a3c" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M0,2 C30,-10 50,8 30,20" stroke="#5a8a3c" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ══════════════════════════════════════
+       Two overlapping leaves (right of staff)
+  ══════════════════════════════════════ -->
+  <!-- Dark-green left leaf -->
+  <g transform="translate(242,45)">
+    <path d="M0,80 C-55,40 -45,-20 0,-5 C10,20 5,55 0,80Z" fill="#2e7d32" opacity="0.92"/>
+    <line x1="0" y1="-5" x2="0" y2="80" stroke="#1b5e20" stroke-width="1.5"/>
+    <line x1="-20" y1="30" x2="0" y2="20" stroke="#1b5e20" stroke-width="1"/>
+    <line x1="-28" y1="50" x2="0" y2="40" stroke="#1b5e20" stroke-width="1"/>
+  </g>
+  <!-- Light-green right leaf -->
+  <g transform="translate(258,38)">
+    <path d="M0,85 C55,42 50,-22 0,-2 C-10,22 -6,58 0,85Z" fill="#8bc34a" opacity="0.92"/>
+    <line x1="0" y1="-2" x2="0" y2="85" stroke="#558b2f" stroke-width="1.5"/>
+    <line x1="22" y1="32" x2="0" y2="22" stroke="#558b2f" stroke-width="1"/>
+    <line x1="30" y1="52" x2="0" y2="42" stroke="#558b2f" stroke-width="1"/>
+  </g>
+  <!-- Small sprout top -->
+  <ellipse cx="250" cy="36" rx="6" ry="10" fill="#8bc34a" transform="rotate(-15,250,36)"/>
+  <ellipse cx="255" cy="32" rx="5" ry="9" fill="#aed581" transform="rotate(20,255,32)"/>
+
+  <!-- ══════════════════════════════════════
+       Amharic ዊጎ  — yellow-green strokes
+  ══════════════════════════════════════ -->
+  <!-- ዊ  (left character) -->
+  <g fill="none" stroke="#9bc63b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <!-- vertical left bar -->
+    <line x1="48" y1="85" x2="48" y2="185"/>
+    <!-- top horizontal -->
+    <line x1="48" y1="85" x2="110" y2="85"/>
+    <!-- middle arm -->
+    <line x1="48" y1="135" x2="90" y2="135"/>
+    <!-- right vertical descender -->
+    <line x1="110" y1="85" x2="110" y2="160"/>
+    <!-- foot of right bar -->
+    <line x1="100" y1="160" x2="125" y2="185"/>
+  </g>
+
+  <!-- ጎ  (right Amharic character) -->
+  <g fill="none" stroke="#9bc63b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <!-- top horizontal -->
+    <line x1="140" y1="92" x2="205" y2="92"/>
+    <!-- left vertical -->
+    <line x1="140" y1="92" x2="140" y2="175"/>
+    <!-- short right vertical -->
+    <line x1="205" y1="92" x2="205" y2="155"/>
+    <!-- small foot curl -->
+    <path d="M205,155 Q215,175 200,185" stroke-width="9"/>
+  </g>
+
+  <!-- ══════════════════════════════════════
+       "wigo"  Latin — rounded green font
+  ══════════════════════════════════════ -->
+  <text x="275" y="185"
+        font-family="'Arial Rounded MT Bold', 'Nunito', Arial, sans-serif"
+        font-size="88"
+        font-weight="700"
+        fill="#4caf50"
+        letter-spacing="-2">wigo</text>
+
+  <!-- ══════════════════════════════════════
+       Amharic subtitle
+  ══════════════════════════════════════ -->
+  <text x="250" y="255"
+        font-family="'Noto Sans Ethiopic', Arial, sans-serif"
+        font-size="22"
+        font-weight="600"
+        fill="#1a237e"
+        text-anchor="middle"
+        letter-spacing="1">የእፅዋት ባህላዊ ህክምና መስጫ</text>
+
+  <!-- ══════════════════════════════════════
+       English subtitle
+  ══════════════════════════════════════ -->
+  <text x="250" y="290"
+        font-family="'Arial Rounded MT Bold', Arial, sans-serif"
+        font-size="19"
+        font-weight="700"
+        fill="#1a237e"
+        text-anchor="middle"
+        letter-spacing="2">HERBALTRADITIONAL MEDICAL SERVICE</text>
+</svg>

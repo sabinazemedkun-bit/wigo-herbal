@@ -1,0 +1,79 @@
+# ============================================================
+# WIGO Herbal — Render.com Deployment Configuration
+# Docs: https://render.com/docs/blueprint-spec
+#
+# This file tells Render exactly how to build and run your app.
+# Commit this file to your GitHub repo — Render reads it
+# automatically when you create a new "Blueprint" service.
+# ============================================================
+
+services:
+  - type: web
+    name: wigo-herbal
+    runtime: node
+    region: frankfurt          # closest free region to Ethiopia
+
+    # ── Source ─────────────────────────────────────────────
+    # Render clones your GitHub repo and runs these commands
+    rootDir: .                 # project root (where package.json is)
+    buildCommand: cd backend && npm install --omit=dev
+    startCommand: node backend/server.js
+
+    # ── Plan ───────────────────────────────────────────────
+    plan: free                 # Free tier — 512 MB RAM, shared CPU
+                               # Note: free tier spins down after 15 min
+                               # of inactivity — first request takes ~30s
+
+    # ── Health Check ───────────────────────────────────────
+    healthCheckPath: /api/health
+
+    # ── Environment Variables ──────────────────────────────
+    # These are set here as defaults.
+    # SECRET values (DB_PASSWORD, JWT_SECRET) must be added
+    # manually in the Render dashboard under Environment tab
+    # — never put real secrets in this file.
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 10000            # Render assigns port 10000 by default
+
+      # Your Render subdomain — Render sets this automatically
+      # Format: https://wigo-herbal.onrender.com
+      - key: DOMAIN
+        value: wigo-herbal.onrender.com
+
+      - key: FRONTEND_URL
+        value: https://wigo-herbal.onrender.com
+
+      # ── Database (Clever Cloud free MySQL) ───────────────
+      # Fill these in Render Dashboard → Environment after
+      # creating your Clever Cloud MySQL database (Step 3)
+      - key: DB_HOST
+        sync: false            # "sync: false" = set manually in dashboard
+
+      - key: DB_PORT
+        sync: false
+
+      - key: DB_USER
+        sync: false
+
+      - key: DB_PASSWORD
+        sync: false
+
+      - key: DB_NAME
+        sync: false
+
+      # ── JWT Secret ───────────────────────────────────────
+      # Generate with:
+      #   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+      - key: JWT_SECRET
+        sync: false
+
+      # ── Admin credentials (used only by setup-db.js once) ─
+      - key: ADMIN_EMAIL
+        value: admin@wigoherbal.com
+
+      - key: ADMIN_PASSWORD
+        sync: false

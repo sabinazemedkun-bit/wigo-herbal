@@ -1,0 +1,18 @@
+# WIGO Herbal — robots.txt
+# Live at: https://wigo-herbal.onrender.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Block admin dashboard from search engines
+Disallow: /admin/
+Disallow: /admin
+
+# Block API endpoints from search engines
+Disallow: /api/
+
+# Block internal libraries from indexing
+Disallow: /assets/libs/
+
+# Sitemap location (update when you get a custom domain)
+Sitemap: https://wigo-herbal.onrender.com/sitemap.xml

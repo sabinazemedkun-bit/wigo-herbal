@@ -1,0 +1,448 @@
+/* About Page Styles */
+
+/* ============================================
+   Page Hero
+============================================ */
+.page-hero {
+    position: relative;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--emerald-green) 100%);
+    overflow: hidden;
+}
+
+.page-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.page-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: var(--white);
+    padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.page-hero h1 {
+    font-size: 3rem;
+    color: var(--white);
+    margin-bottom: var(--spacing-sm);
+}
+
+.page-hero p {
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.breadcrumb {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    list-style: none;
+    color: var(--secondary-green);
+}
+
+.breadcrumb li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin-left: var(--spacing-xs);
+}
+
+.breadcrumb a {
+    color: var(--secondary-green);
+}
+
+.breadcrumb a:hover {
+    color: var(--white);
+}
+
+/* ============================================
+   History Section
+============================================ */
+.about-history {
+    padding: var(--spacing-2xl) 0;
+}
+
+.history-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.history-text .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background-color: var(--secondary-green);
+    color: var(--primary-green);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+}
+
+.history-text h2 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.history-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--dark-gray);
+}
+
+.history-image {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+}
+
+.history-image-placeholder {
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    padding: var(--spacing-2xl);
+    text-align: center;
+    color: var(--primary-green);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-image-placeholder i {
+    font-size: 5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.history-image-placeholder p {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* ============================================
+   Mission, Vision, Values Section
+============================================ */
+.mvv-section {
+    padding: var(--spacing-2xl) 0;
+}
+
+.mvv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.mvv-card {
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: var(--transition-normal);
+}
+
+.mvv-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.mvv-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--primary-green), var(--emerald-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+}
+
+.mvv-icon i {
+    font-size: 2.5rem;
+    color: var(--white);
+}
+
+.mvv-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.mvv-card p {
+    line-height: 1.8;
+    color: var(--dark-gray);
+}
+
+.values-list {
+    list-style: none;
+    text-align: left;
+}
+
+.values-list li {
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.values-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary-green);
+    font-weight: bold;
+}
+
+/* ============================================
+   Core Values Detail
+============================================ */
+.values-section {
+    padding: var(--spacing-2xl) 0;
+}
+
+.values-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.value-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+}
+
+.value-item:hover {
+    transform: translateX(10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.value-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    opacity: 0.2;
+    min-width: 80px;
+}
+
+.value-content h4 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary-green);
+}
+
+.value-content p {
+    line-height: 1.8;
+    color: var(--dark-gray);
+}
+
+/* ============================================
+   Why Choose Us
+============================================ */
+.why-section {
+    padding: var(--spacing-2xl) 0;
+}
+
+.why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.why-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    background-color: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+}
+
+.why-item:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+}
+
+.why-item i {
+    font-size: 2rem;
+    color: var(--primary-green);
+}
+
+.why-item span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+/* ============================================
+   Philosophy Section
+============================================ */
+.philosophy-section {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, var(--secondary-green), var(--white));
+}
+
+.philosophy-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    text-align: center;
+    border: 3px solid var(--primary-green);
+}
+
+.philosophy-icon {
+    font-size: 3rem;
+    color: var(--primary-green);
+    opacity: 0.3;
+    margin-bottom: var(--spacing-md);
+}
+
+.philosophy-card h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-green);
+}
+
+.philosophy-text {
+    font-size: 1.2rem;
+    line-height: 1.9;
+    color: var(--dark-gray);
+    margin-bottom: var(--spacing-lg);
+}
+
+.philosophy-author {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    font-style: italic;
+}
+
+/* ============================================
+   CTA Section
+============================================ */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    color: var(--white);
+    padding: var(--spacing-2xl) 0;
+}
+
+.cta-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    color: var(--white);
+    margin-bottom: var(--spacing-md);
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.95;
+}
+
+.cta-content .btn {
+    background-color: var(--white);
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+.cta-content .btn:hover {
+    background-color: var(--secondary-green);
+    transform: scale(1.05);
+}
+
+/* ============================================
+   Responsive Design
+============================================ */
+@media (max-width: 992px) {
+    .page-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .history-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-image {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .page-hero p {
+        font-size: 1.1rem;
+    }
+    
+    .mvv-grid,
+    .why-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .value-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .philosophy-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .history-text h2 {
+        font-size: 2rem;
+    }
+    
+    .mvv-card,
+    .value-item,
+    .philosophy-card {
+        padding: var(--spacing-md);
+    }
+}
+
+/* ── Stats Section overrides for about.css ───────────────── */
+.stats-section .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* breadcrumb fix */
+.breadcrumb { padding: 0; margin: 0; }
+.breadcrumb li { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
+.breadcrumb a { color: rgba(255,255,255,0.9); }
+.breadcrumb a:hover { color: var(--white); }

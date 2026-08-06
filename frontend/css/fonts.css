@@ -1,0 +1,40 @@
+/*
+ * WIGO Herbal — Font Fallback
+ * Ensures text renders even if Google Fonts CDN is unavailable.
+ * System fonts that support Ethiopic (Amharic) script are used as fallback.
+ */
+
+/* Poppins fallback — uses system sans-serif if CDN unreachable */
+body {
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Amharic / Ethiopic script fallback stack */
+/* Windows: Ebrima, Nyala (built-in Ethiopic fonts) */
+/* Android/Linux: Noto Sans Ethiopic (often pre-installed) */
+.lang-am,
+[lang="am"],
+[data-am],
+.amharic-text,
+.gc-am,
+.lb-am {
+  font-family:
+    'Noto Sans Ethiopic',
+    'Ebrima',
+    'Nyala',
+    'Ethiopia Jiret',
+    'Abyssinica SIL',
+    Arial Unicode MS,
+    sans-serif;
+}
+
+/* Ensure Amharic characters in nav and content use correct font */
+[data-am]:lang(am),
+body.lang-am {
+  font-family:
+    'Noto Sans Ethiopic',
+    'Ebrima',
+    'Nyala',
+    Arial Unicode MS,
+    sans-serif;
+}

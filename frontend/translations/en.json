@@ -1,0 +1,188 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "address": "Address",
+    "appointment": "Appointment",
+    "contact": "Contact"
+  },
+  "home": {
+    "welcome": "Welcome to WIGO Herbal Traditional Medical Services",
+    "subtitle": "Natural Healing for a Healthier Life",
+    "cta": "Book Appointment",
+    "quote": "Plants have life. They breathe, they have eyes to see, they have ears to hear.",
+    "quoteAuthor": "Hakim Taye Tesema"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Traditional Ethiopian Herbal Medicine",
+    "history": "WIGO Herbal Traditional Medical Services has been serving the community with trusted Ethiopian traditional herbal medicine for years. Our practice is rooted in centuries-old wisdom passed down through generations of healers.",
+    "mission": "Our Mission",
+    "missionText": "To provide safe, effective, and natural herbal treatments that promote healing and wellness for all our patients.",
+    "vision": "Our Vision",
+    "visionText": "To be the leading traditional herbal medical center in Ethiopia, recognized for excellence in natural healing and patient care.",
+    "values": "Core Values",
+    "value1": "Natural Healing",
+    "value1Text": "We believe in the power of nature to heal and restore health.",
+    "value2": "Traditional Wisdom",
+    "value2Text": "We honor and preserve Ethiopian traditional medical knowledge.",
+    "value3": "Patient Care",
+    "value3Text": "Every patient receives personalized attention and care.",
+    "value4": "Quality",
+    "value4Text": "We maintain the highest standards in herbal preparation and treatment.",
+    "why": "Why Choose WIGO Herbal",
+    "why1": "Experienced traditional healers",
+    "why2": "Proven natural treatments",
+    "why3": "Personalized care plans",
+    "why4": "Safe and effective remedies"
+  },
+  "services": {
+    "title": "Our Medical Services",
+    "subtitle": "Professional Ethiopian Herbal Treatment for Natural Healing",
+    "search": "Search services...",
+    "noResults": "No services found",
+    "learnMore": "Learn More",
+    "bookNow": "Book Appointment",
+    "services": [
+      {
+        "title": "Waist Pain Treatment",
+        "description": "Traditional herbal remedies for lower back and waist pain relief."
+      },
+      {
+        "title": "Hip Pain Treatment",
+        "description": "Natural treatments for hip joint pain and mobility issues."
+      },
+      {
+        "title": "Shoulder, Back & Arm Pain",
+        "description": "Comprehensive herbal therapy for upper body pain management."
+      },
+      {
+        "title": "Leg Pain Treatment",
+        "description": "Effective herbal solutions for leg pain and discomfort."
+      },
+      {
+        "title": "Kidney Problems",
+        "description": "Traditional remedies for kidney health and function."
+      },
+      {
+        "title": "Stomach & Intestinal Ulcer",
+        "description": "Natural healing for digestive system ulcers and disorders."
+      },
+      {
+        "title": "Nerve Disorders",
+        "description": "Herbal treatments for nervous system conditions."
+      },
+      {
+        "title": "Uterus Problems",
+        "description": "Women's health treatments for uterine conditions."
+      },
+      {
+        "title": "Rheumatism",
+        "description": "Traditional remedies for rheumatic conditions and joint pain."
+      },
+      {
+        "title": "Respiratory Problems",
+        "description": "Herbal solutions for breathing and lung health."
+      },
+      {
+        "title": "Skin Diseases",
+        "description": "Natural treatments for various skin conditions."
+      },
+      {
+        "title": "Hemorrhoids",
+        "description": "Effective herbal remedies for hemorrhoid relief."
+      },
+      {
+        "title": "Eye Problems",
+        "description": "Traditional eye care and vision health treatments."
+      },
+      {
+        "title": "Brain Problems",
+        "description": "Herbal support for neurological health."
+      },
+      {
+        "title": "Prostate & Urinary Problems",
+        "description": "Men's health treatments for prostate and urinary conditions."
+      },
+      {
+        "title": "Body Pain & Weakness",
+        "description": "Comprehensive treatment for general body pain and fatigue."
+      },
+      {
+        "title": "Epilepsy",
+        "description": "Traditional herbal management for epileptic conditions."
+      },
+      {
+        "title": "Bone & Joint Pain",
+        "description": "Natural remedies for skeletal and joint health."
+      },
+      {
+        "title": "Other Health Problems",
+        "description": "Consultation for various other health conditions."
+      }
+    ]
+  },
+  "address": {
+    "title": "Visit Our Clinic",
+    "subtitle": "Find us easily and experience trusted Ethiopian traditional herbal healthcare.",
+    "addressTitle": "Address",
+    "addressText": "Addis Ababa, North Sub-City, opposite Sarem Hotel, 30 meters inside the cobblestone road, inside Ato Yeshitla's compound.",
+    "directions": "How to Reach Us",
+    "step1": "Opposite Sarem Hotel",
+    "step2": "Enter the cobblestone road",
+    "step3": "Walk approximately 30 meters",
+    "step4": "The clinic is inside Ato Yeshitla's compound",
+    "cta": "Ready to begin your natural healing journey? Visit WIGO Herbal Traditional Medical Service Center today.",
+    "viewMap": "View on Map",
+    "getDirections": "Get Directions",
+    "copyAddress": "Copy Address"
+  },
+  "appointment": {
+    "title": "Book an Appointment",
+    "subtitle": "Schedule your visit for natural healing consultation",
+    "fullName": "Full Name",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "age": "Age",
+    "phone": "Phone Number",
+    "email": "Email Address",
+    "addressField": "Address",
+    "language": "Preferred Language",
+    "service": "Service Required",
+    "selectService": "Select a service",
+    "date": "Appointment Date",
+    "time": "Appointment Time",
+    "symptoms": "Symptoms",
+    "notes": "Additional Notes",
+    "submit": "Book Appointment",
+    "reset": "Reset Form",
+    "success": "Appointment booked successfully! We will contact you soon.",
+    "error": "Please fill all required fields."
+  },
+  "contact": {
+    "title": "Contact WIGO Herbal Traditional Medical Service Center",
+    "subtitle": "We are here to help you begin your natural healing journey.",
+    "tagline": "Let's take care of your health together — Follow Us",
+    "social": "Social Media",
+    "phones": "Phone Numbers",
+    "location": "Clinic Location",
+    "form": "Send us a Message",
+    "name": "Your Name",
+    "phone": "Phone Number",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Message sent successfully!",
+    "visitPage": "Visit Page",
+    "copyNumber": "Copy Number",
+    "callNow": "Call Now"
+  },
+  "footer": {
+    "tagline1": "WIGO Herbal Traditional Medical Services",
+    "tagline2": "Natural Healing for a Healthier Life",
+    "copyright": "© 2026 WIGO Herbal Traditional Medical Services. All Rights Reserved.",
+    "heart": "For Public Health, We Care"
+  }
+}
