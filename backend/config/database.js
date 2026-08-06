@@ -3,93 +3,113 @@
 /**
  * WIGO Herbal — MySQL Connection Pool
  * ─────────────────────────────────────────────────────────────
- * Uses mysql2/promise so every pool method (execute, query,
- * getConnection) returns a Promise — fully compatible with all
- * existing async/await calls throughout the controllers.
+ * mysql2/promise pool — all db.execute() / db.query() calls
+ * across the controllers work without any extra .promise() call.
  *
- * SSL is always enabled with rejectUnauthorized: false so the
- * pool works on:
- *   • Aiven Cloud MySQL    (requires SSL, self-signed cert)
- *   • Clever Cloud MySQL   (requires SSL)
- *   • Local MySQL dev      (SSL option is silently ignored when
- *                           the server doesn't enforce it)
- *   • Vercel serverless    (each invocation creates a new pool;
- *                           connectTimeout keeps cold starts fast)
+ * Vercel-safe:
+ *  • Never calls process.exit() — would kill the serverless fn
+ *  • Startup test is lazy (runs on first query, not on import)
+ *  • Pool-level error events are caught so unhandled rejections
+ *    don't trigger FUNCTION_INVOCATION_FAILED
  */
 
 const mysql = require('mysql2/promise');
 
-// ── Environment variables ────────────────────────────────────
-const DB_HOST     = process.env.DB_HOST;
-const DB_USER     = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_NAME     = process.env.DB_NAME;
-const DB_PORT     = process.env.DB_PORT || 28836;   // Aiven default port
+// ── Guard: warn loudly if env vars are missing but don't crash ─
+const DB_HOST     = process.env.DB_HOST     || null;
+const DB_USER     = process.env.DB_USER     || null;
+const DB_PASSWORD = process.env.DB_PASSWORD || null;
+const DB_NAME     = process.env.DB_NAME     || null;
+const DB_PORT     = Number(process.env.DB_PORT) || 28836;  // Aiven default
+
+if (!DB_HOST || !DB_USER || !DB_PASSWORD || !DB_NAME) {
+  // Log a clear warning — individual API handlers will return 503
+  // when they try to use the pool, rather than crashing the process.
+  console.warn(
+    '⚠️  Database env vars missing — ' +
+    'DB_HOST/DB_USER/DB_PASSWORD/DB_NAME must be set in Vercel settings. ' +
+    'API calls requiring the DB will return 503 until they are configured.'
+  );
+}
 
 // ── Connection pool ──────────────────────────────────────────
-const pool = mysql.createPool({
-  host    : DB_HOST,
-  port    : Number(DB_PORT),
-  user    : DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
+let pool;
 
-  // SSL — required by Aiven, Clever Cloud, and most managed MySQL.
-  // rejectUnauthorized: false accepts Aiven's self-signed certificate.
-  ssl: {
-    rejectUnauthorized: false
-  },
+try {
+  pool = mysql.createPool({
+    host    : DB_HOST,
+    port    : DB_PORT,
+    user    : DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
 
-  // Pool behaviour
-  waitForConnections: true,
-  connectionLimit   : 10,    // max simultaneous connections
-  queueLimit        : 0,     // unlimited queue (0 = no limit)
+    // SSL — required by Aiven / Clever Cloud managed MySQL.
+    // rejectUnauthorized: false accepts the provider's self-signed cert.
+    // Local MySQL silently ignores this option.
+    ssl: {
+      rejectUnauthorized: false
+    },
 
-  // Encoding — utf8mb4 supports Amharic / Ethiopic characters
-  charset: 'utf8mb4',
+    // Pool behaviour
+    waitForConnections: true,
+    connectionLimit   : 10,
+    queueLimit        : 0,
 
-  // Store all timestamps in UTC
-  timezone: '+00:00',
+    // utf8mb4 — required for Amharic / Ethiopic characters
+    charset: 'utf8mb4',
 
-  // Cloud MySQL can be slow on first connect (cold start)
-  connectTimeout: 20000      // 20 seconds
-});
+    // Store timestamps in UTC
+    timezone: '+00:00',
 
-// ── Startup connectivity test ────────────────────────────────
-// Runs once when the module is first required.
-// On Vercel serverless each function invocation may import this
-// module fresh, so the test runs per cold start — lightweight
-// because it only borrows and immediately releases one connection.
-(async function testConnection() {
+    // Cloud DBs can be slow to accept connections on cold start
+    connectTimeout: 20000
+  });
+
+  // ── Swallow pool-level errors ─────────────────────────────
+  // Without this listener, any pool error (e.g. network blip
+  // after initial connection) throws an uncaught exception that
+  // Vercel treats as FUNCTION_INVOCATION_FAILED.
+  pool.pool.on('error', (err) => {
+    console.error('MySQL pool error (non-fatal):', err.message);
+    // Do NOT re-throw or call process.exit() here.
+    // The next query attempt will automatically try to reconnect.
+  });
+
+} catch (createErr) {
+  // mysql.createPool itself threw — almost always a bad option value.
+  // Log it and export a dummy pool so server.js can still start.
+  console.error('Failed to create MySQL pool:', createErr.message);
+  pool = null;
+}
+
+// ── Lazy connectivity test ───────────────────────────────────
+// Called once by server.js AFTER express is set up, not at module
+// import time — this way a DB hiccup on cold start doesn't prevent
+// Vercel from even serving the health-check endpoint.
+async function testConnection() {
+  if (!pool) {
+    console.error('❌ Pool was not created — check env vars and restart.');
+    return false;
+  }
   try {
     const conn = await pool.getConnection();
     await conn.ping();
     conn.release();
-
-    console.log('✅ Database connected successfully');
-    console.log(`   Host: ${DB_HOST}:${DB_PORT} | DB: ${DB_NAME} | SSL: on`);
+    console.log('✅ Database connected');
+    console.log(`   ${DB_HOST}:${DB_PORT}  db=${DB_NAME}  ssl=on`);
+    return true;
   } catch (err) {
+    // Log but DO NOT call process.exit() — Vercel would report 500
     console.error('❌ Database connection failed:', err.message);
-
-    // Actionable hints for the most common failures
     if (err.code === 'ECONNREFUSED')
-      console.error('   → DB_HOST / DB_PORT is wrong or MySQL is not running');
+      console.error('   → Check DB_HOST / DB_PORT');
     if (err.code === 'ER_ACCESS_DENIED_ERROR')
-      console.error('   → DB_USER or DB_PASSWORD is incorrect');
+      console.error('   → Check DB_USER / DB_PASSWORD');
     if (err.code === 'ER_BAD_DB_ERROR')
-      console.error('   → Database does not exist — run: node backend/scripts/setup-db.js');
-    if (!DB_HOST || !DB_USER || !DB_PASSWORD || !DB_NAME)
-      console.error('   → One or more DB_* environment variables are missing');
-
-    // Exit so the process (or Vercel invocation) fails visibly
-    // instead of silently serving broken responses.
-    process.exit(1);
+      console.error('   → DB does not exist — run setup-db.js');
+    return false;
   }
-}());
+}
 
-// ── Export ───────────────────────────────────────────────────
-// Exported as the pool itself (not pool.promise()) because
-// mysql2/promise's createPool already returns a promise-enabled
-// pool — db.execute(), db.query(), db.getConnection() all work
-// directly without any extra .promise() call.
 module.exports = pool;
+module.exports.testConnection = testConnection;

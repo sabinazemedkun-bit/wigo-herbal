@@ -207,12 +207,17 @@ app.use((err, _req, res, _next) => {
 // ============================================================
 if (require.main === module) {
   // Running directly with node — start the HTTP server
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, async () => {
     console.log(`\n🌿 WIGO Herbal Server running`);
     console.log(`   URL:       http://localhost:${PORT}`);
     console.log(`   API:       http://localhost:${PORT}/api`);
     console.log(`   Admin:     http://localhost:${PORT}/admin/`);
     console.log(`   Mode:      ${process.env.NODE_ENV || 'development'}\n`);
+
+    // Test DB connection AFTER the server is listening so a slow
+    // DB doesn't delay the port bind (important for PM2 health checks)
+    const { testConnection } = require('./config/database');
+    await testConnection();
   });
 
   // Graceful shutdown — for PM2 / Docker
@@ -226,7 +231,11 @@ if (require.main === module) {
 
 } else {
   // Imported as a module (Vercel serverless / index.js)
-  console.log(`🌿 WIGO Herbal running in serverless mode | Mode: ${process.env.NODE_ENV || 'development'}`);
+  // Trigger a lazy DB test so the first cold-start log is informative
+  const { testConnection } = require('./config/database');
+  testConnection().catch(() => {/* already logged inside testConnection */});
+
+  console.log(`🌿 WIGO Herbal serverless | Mode: ${process.env.NODE_ENV || 'development'}`);
 }
 
 // Export the Express app for Vercel
