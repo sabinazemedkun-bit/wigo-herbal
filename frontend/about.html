@@ -85,18 +85,18 @@
         </div>
         <div class="stats-grid">
             <div class="stat-card" data-aos="zoom-in">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
-                <div class="stat-number" data-count="250000">250,000+</div>
+                <div class="stat-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+                <div class="stat-number" data-count="250000" aria-label="250,000 plus treated patients">250,000+</div>
                 <div class="stat-label" data-en="Treated Patients" data-am="የታከሙ ታካሚዎች">Treated Patients</div>
             </div>
             <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
-                <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-                <div class="stat-number" data-count="15">15+</div>
+                <div class="stat-icon"><i class="fas fa-calendar-alt" aria-hidden="true"></i></div>
+                <div class="stat-number" data-count="15" aria-label="15 plus years of experience">15+</div>
                 <div class="stat-label" data-en="Years of Experience" data-am="የልምድ ዓመታት">Years of Experience</div>
             </div>
             <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
-                <div class="stat-icon"><i class="fas fa-award"></i></div>
-                <div class="stat-number" data-count="98">98%</div>
+                <div class="stat-icon"><i class="fas fa-award" aria-hidden="true"></i></div>
+                <div class="stat-number" data-count="98" aria-label="98 percent treatment effectiveness">98%</div>
                 <div class="stat-label" data-en="Treatment Effectiveness %" data-am="የሕክምና ውጤታማነት %">Treatment Effectiveness %</div>
             </div>
         </div>
@@ -273,7 +273,7 @@
 <script>
 AOS.init({ duration: 800, once: true, offset: 0 });
 
-/* ── Counter animation ── */
+/* ── Achievements counter ─────────────────────────────────── */
 function formatCount(target) {
     if (target >= 100000) return (target / 1000).toFixed(0) + ',000+';
     if (target === 98)    return '98%';
@@ -281,20 +281,22 @@ function formatCount(target) {
 }
 
 function animateCounter(el) {
-    var target    = parseInt(el.getAttribute('data-count'), 10);
-    var duration  = 1800;    /* ms */
-    var steps     = 60;
-    var interval  = duration / steps;
-    var step      = 0;
-    /* Show final value immediately as fallback */
+    var target   = parseInt(el.getAttribute('data-count'), 10);
+    if (isNaN(target)) return;
+
+    var steps    = 60;
+    var interval = 1800 / steps;
+    var step     = 0;
+
+    // Set final value as the visible fallback immediately
     el.textContent = formatCount(target);
-    /* Then animate from 0 */
-    el.textContent = '0';
+
+    // Reset to zero then count up
+    el.textContent = target >= 100000 ? '0K+' : '0' + (target === 98 ? '%' : '+');
+
     var timer = setInterval(function () {
         step++;
-        var progress = step / steps;
-        /* Ease-out curve */
-        var eased   = 1 - Math.pow(1 - progress, 3);
+        var eased   = 1 - Math.pow(1 - step / steps, 3);
         var current = Math.ceil(eased * target);
         if (step >= steps || current >= target) {
             el.textContent = formatCount(target);
@@ -307,19 +309,33 @@ function animateCounter(el) {
     }, interval);
 }
 
+var countersRan = false;
 function runCounters() {
-    document.querySelectorAll('.stat-number[data-count]').forEach(animateCounter);
+    if (countersRan) return;
+    countersRan = true;
+    // Delay slightly so AOS has finished revealing the cards
+    setTimeout(function () {
+        document.querySelectorAll('.stat-number[data-count]').forEach(animateCounter);
+    }, 120);
 }
 
-/* Run immediately if section is already visible, otherwise observe */
+// After language.js runs it may overwrite .stat-number text.
+// We hook into the langChanged event to restore the values.
+document.addEventListener('langChanged', function () {
+    if (countersRan) {
+        document.querySelectorAll('.stat-number[data-count]').forEach(function (el) {
+            el.textContent = formatCount(parseInt(el.getAttribute('data-count'), 10));
+        });
+    }
+});
+
+// Run counters when stats section enters viewport
 var statsSection = document.querySelector('.stats-section');
 if (statsSection) {
-    var rect = statsSection.getBoundingClientRect();
-    if (rect.top < window.innerHeight) {
-        /* Already visible on load */
+    // Check if already visible on load
+    if (statsSection.getBoundingClientRect().top < window.innerHeight) {
         runCounters();
     } else {
-        /* Wait until scrolled into view */
         var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
@@ -327,11 +343,10 @@ if (statsSection) {
                     observer.disconnect();
                 }
             });
-        }, { threshold: 0.2 });
+        }, { threshold: 0.15 });
         observer.observe(statsSection);
     }
 } else {
-    /* Fallback — just show final values */
     document.querySelectorAll('.stat-number[data-count]').forEach(function (el) {
         el.textContent = formatCount(parseInt(el.getAttribute('data-count'), 10));
     });

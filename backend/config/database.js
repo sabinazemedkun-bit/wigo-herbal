@@ -20,15 +20,15 @@ const DB_HOST     = process.env.DB_HOST     || null;
 const DB_USER     = process.env.DB_USER     || null;
 const DB_PASSWORD = process.env.DB_PASSWORD || null;
 const DB_NAME     = process.env.DB_NAME     || null;
-const DB_PORT     = Number(process.env.DB_PORT) || 28836;  // Aiven default
+const DB_PORT     = Number(process.env.DB_PORT) || 16356;  // Aiven default port
 
-if (!DB_HOST || !DB_USER || !DB_PASSWORD || !DB_NAME) {
-  // Log a clear warning — individual API handlers will return 503
-  // when they try to use the pool, rather than crashing the process.
+const DB_VARS_OK = !!(DB_HOST && DB_USER && DB_PASSWORD && DB_NAME);
+
+if (!DB_VARS_OK) {
   console.warn(
     '⚠️  Database env vars missing — ' +
-    'DB_HOST/DB_USER/DB_PASSWORD/DB_NAME must be set in Vercel settings. ' +
-    'API calls requiring the DB will return 503 until they are configured.'
+    'DB_HOST/DB_USER/DB_PASSWORD/DB_NAME must be set in Vercel settings.\n' +
+    `   DB_HOST=${DB_HOST||'MISSING'} DB_USER=${DB_USER||'MISSING'} DB_NAME=${DB_NAME||'MISSING'} DB_PORT=${DB_PORT}`
   );
 }
 
@@ -113,3 +113,4 @@ async function testConnection() {
 
 module.exports = pool;
 module.exports.testConnection = testConnection;
+module.exports.DB_VARS_OK = DB_VARS_OK;

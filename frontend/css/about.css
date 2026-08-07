@@ -441,6 +441,39 @@
     margin-bottom: var(--spacing-xl);
 }
 
+/* Protect stat numbers and icons from global color overrides */
+.stat-number {
+    font-size: 3rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.1;
+    margin: 0.5rem 0;
+    display: block;
+}
+
+.stat-label {
+    color: rgba(255,255,255,0.9) !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: 0.3rem;
+}
+
+.stat-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+}
+
+.stat-icon i {
+    font-size: 1.8rem !important;
+    color: #FFC107 !important;   /* gold — clearly visible on green background */
+}
+
 /* breadcrumb fix */
 .breadcrumb { padding: 0; margin: 0; }
 .breadcrumb li { color: rgba(255,255,255,0.8); font-size: 0.95rem; }

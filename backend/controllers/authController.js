@@ -23,13 +23,10 @@ const { generateToken } = require('../middleware/auth');
 const SALT_ROUNDS = 12;
 
 // ── Guard helpers ────────────────────────────────────────────
-
-/**
- * Returns true if the DB pool is ready to accept queries.
- * db is null when mysql.createPool() failed (missing env vars).
- */
 function dbAvailable() {
-  return db !== null && db !== undefined;
+  // pool is null when createPool failed; DB_VARS_OK is false when
+  // env vars were missing at startup — both mean the DB is unusable
+  return db !== null && db !== undefined && db.DB_VARS_OK !== false;
 }
 
 /**
