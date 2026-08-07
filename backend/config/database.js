@@ -3,114 +3,151 @@
 /**
  * WIGO Herbal — MySQL Connection Pool
  * ─────────────────────────────────────────────────────────────
- * mysql2/promise pool — all db.execute() / db.query() calls
- * across the controllers work without any extra .promise() call.
+ * mysql2/promise pool — Vercel serverless safe.
  *
- * Vercel-safe:
- *  • Never calls process.exit() — would kill the serverless fn
- *  • Startup test is lazy (runs on first query, not on import)
- *  • Pool-level error events are caught so unhandled rejections
- *    don't trigger FUNCTION_INVOCATION_FAILED
+ * ENOTFOUND fix: all env vars are trimmed and stripped of
+ * surrounding quotes before use — copy-paste from Vercel UI
+ * sometimes injects invisible whitespace or quote characters.
  */
 
 const mysql = require('mysql2/promise');
 
-// ── Guard: warn loudly if env vars are missing but don't crash ─
-const DB_HOST     = process.env.DB_HOST     || null;
-const DB_USER     = process.env.DB_USER     || null;
-const DB_PASSWORD = process.env.DB_PASSWORD || null;
-const DB_NAME     = process.env.DB_NAME     || null;
-const DB_PORT     = Number(process.env.DB_PORT) || 16356;  // Aiven default port
+// ── Sanitize helper ──────────────────────────────────────────
+// Removes surrounding whitespace and accidental quote chars that
+// can appear when copy-pasting into Vercel environment variables.
+function sanitizeEnv(value) {
+  if (value === undefined || value === null) return null;
+  return String(value)
+    .trim()
+    .replace(/^["']|["']$/g, '');  // strip leading/trailing quotes
+}
 
-const DB_VARS_OK = !!(DB_HOST && DB_USER && DB_PASSWORD && DB_NAME);
+// ── Read and sanitize every DB env var ───────────────────────
+const DB_HOST     = sanitizeEnv(process.env.DB_HOST);
+const DB_USER     = sanitizeEnv(process.env.DB_USER);
+const DB_PASSWORD = sanitizeEnv(process.env.DB_PASSWORD);
+const DB_NAME     = sanitizeEnv(process.env.DB_NAME);
+const DB_PORT     = sanitizeEnv(process.env.DB_PORT);
+const DB_PORT_NUM = DB_PORT ? parseInt(DB_PORT, 10) : 16356; // Aiven default
+
+// ── Validate ─────────────────────────────────────────────────
+const MISSING = [];
+if (!DB_HOST)     MISSING.push('DB_HOST');
+if (!DB_USER)     MISSING.push('DB_USER');
+if (!DB_PASSWORD) MISSING.push('DB_PASSWORD');
+if (!DB_NAME)     MISSING.push('DB_NAME');
+
+const DB_VARS_OK = MISSING.length === 0;
 
 if (!DB_VARS_OK) {
-  console.warn(
-    '⚠️  Database env vars missing — ' +
-    'DB_HOST/DB_USER/DB_PASSWORD/DB_NAME must be set in Vercel settings.\n' +
-    `   DB_HOST=${DB_HOST||'MISSING'} DB_USER=${DB_USER||'MISSING'} DB_NAME=${DB_NAME||'MISSING'} DB_PORT=${DB_PORT}`
+  console.error(
+    `❌ MISSING DATABASE ENV VARS: ${MISSING.join(', ')}\n` +
+    '   Go to Vercel → Project → Settings → Environment Variables and add them.\n' +
+    '   Required: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT'
   );
+} else {
+  // Log sanitized values (never log the password)
+  console.log('🔌 DB config loaded:');
+  console.log(`   HOST=${DB_HOST}  PORT=${DB_PORT_NUM}  DB=${DB_NAME}  USER=${DB_USER}`);
+
+  // Catch common ENOTFOUND causes — hostname must not start with
+  // whitespace, quotes, or contain "MISSING" as a placeholder
+  if (DB_HOST.startsWith(' ') || DB_HOST.includes('"') || DB_HOST === 'MISSING') {
+    console.error(`❌ DB_HOST looks invalid: "${DB_HOST}" — check Vercel env var`);
+  }
+
+  if (isNaN(DB_PORT_NUM) || DB_PORT_NUM < 1 || DB_PORT_NUM > 65535) {
+    console.error(`❌ DB_PORT is not a valid port number: "${DB_PORT}" — defaulting to 16356`);
+  }
 }
 
 // ── Connection pool ──────────────────────────────────────────
-let pool;
+let pool = null;
 
-try {
-  pool = mysql.createPool({
-    host    : DB_HOST,
-    port    : DB_PORT,
-    user    : DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
+if (DB_VARS_OK) {
+  try {
+    pool = mysql.createPool({
+      host    : DB_HOST,
+      port    : DB_PORT_NUM,
+      user    : DB_USER,
+      password: DB_PASSWORD,
+      database: DB_NAME,
 
-    // SSL — required by Aiven / Clever Cloud managed MySQL.
-    // rejectUnauthorized: false accepts the provider's self-signed cert.
-    // Local MySQL silently ignores this option.
-    ssl: {
-      rejectUnauthorized: false
-    },
+      // SSL — required by Aiven MySQL
+      ssl: {
+        rejectUnauthorized: false
+      },
 
-    // Pool behaviour
-    waitForConnections: true,
-    connectionLimit   : 10,
-    queueLimit        : 0,
+      // Pool behaviour
+      waitForConnections: true,
+      connectionLimit   : 10,
+      queueLimit        : 0,
 
-    // utf8mb4 — required for Amharic / Ethiopic characters
-    charset: 'utf8mb4',
+      // utf8mb4 — required for Amharic / Ethiopic characters
+      charset: 'utf8mb4',
 
-    // Store timestamps in UTC
-    timezone: '+00:00',
+      // Store timestamps in UTC
+      timezone: '+00:00',
 
-    // Cloud DBs can be slow to accept connections on cold start
-    connectTimeout: 20000
-  });
+      // Cloud DBs can be slow on cold start
+      connectTimeout: 30000
+    });
 
-  // ── Swallow pool-level errors ─────────────────────────────
-  // Without this listener, any pool error (e.g. network blip
-  // after initial connection) throws an uncaught exception that
-  // Vercel treats as FUNCTION_INVOCATION_FAILED.
-  pool.pool.on('error', (err) => {
-    console.error('MySQL pool error (non-fatal):', err.message);
-    // Do NOT re-throw or call process.exit() here.
-    // The next query attempt will automatically try to reconnect.
-  });
+    // Swallow pool-level errors — prevent uncaught exception crashes
+    pool.pool.on('error', (err) => {
+      console.error('MySQL pool error (non-fatal):', err.code, err.message);
+    });
 
-} catch (createErr) {
-  // mysql.createPool itself threw — almost always a bad option value.
-  // Log it and export a dummy pool so server.js can still start.
-  console.error('Failed to create MySQL pool:', createErr.message);
-  pool = null;
+    console.log(`✅ MySQL pool created → ${DB_HOST}:${DB_PORT_NUM}/${DB_NAME}`);
+
+  } catch (createErr) {
+    console.error('❌ Failed to create MySQL pool:', createErr.message);
+    pool = null;
+  }
 }
 
 // ── Lazy connectivity test ───────────────────────────────────
-// Called once by server.js AFTER express is set up, not at module
-// import time — this way a DB hiccup on cold start doesn't prevent
-// Vercel from even serving the health-check endpoint.
 async function testConnection() {
   if (!pool) {
-    console.error('❌ Pool was not created — check env vars and restart.');
+    console.error('❌ Cannot test — pool not created (missing env vars)');
     return false;
   }
+
+  let conn;
   try {
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     await conn.ping();
-    conn.release();
-    console.log('✅ Database connected');
-    console.log(`   ${DB_HOST}:${DB_PORT}  db=${DB_NAME}  ssl=on`);
+    console.log(`✅ Database connected: ${DB_HOST}:${DB_PORT_NUM}/${DB_NAME} [SSL on]`);
     return true;
+
   } catch (err) {
-    // Log but DO NOT call process.exit() — Vercel would report 500
-    console.error('❌ Database connection failed:', err.message);
-    if (err.code === 'ECONNREFUSED')
-      console.error('   → Check DB_HOST / DB_PORT');
-    if (err.code === 'ER_ACCESS_DENIED_ERROR')
-      console.error('   → Check DB_USER / DB_PASSWORD');
-    if (err.code === 'ER_BAD_DB_ERROR')
-      console.error('   → DB does not exist — run setup-db.js');
+    console.error('❌ Database connection test failed:', err.code, err.message);
+
+    if (err.code === 'ENOTFOUND') {
+      console.error(`   → Hostname "${DB_HOST}" could not be resolved.`);
+      console.error('   → Check DB_HOST in Vercel env vars — no spaces, quotes, or typos.');
+    }
+    if (err.code === 'ECONNREFUSED') {
+      console.error(`   → Connection refused at ${DB_HOST}:${DB_PORT_NUM}`);
+      console.error('   → Check DB_PORT is correct (Aiven port is usually 5-digits, e.g. 16356)');
+    }
+    if (err.code === 'ER_ACCESS_DENIED_ERROR') {
+      console.error('   → Wrong DB_USER or DB_PASSWORD');
+    }
+    if (err.code === 'ER_BAD_DB_ERROR') {
+      console.error(`   → Database "${DB_NAME}" does not exist — run: node backend/scripts/setup-db.js`);
+    }
+    if (err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET') {
+      console.error('   → Connection timed out — Aiven IP allowlist may be blocking the request.');
+      console.error('   → Set IP filter to 0.0.0.0/0 in Aiven console.');
+    }
     return false;
+
+  } finally {
+    if (conn) conn.release();
   }
 }
 
-module.exports = pool;
+module.exports        = pool;
 module.exports.testConnection = testConnection;
-module.exports.DB_VARS_OK = DB_VARS_OK;
+module.exports.DB_VARS_OK     = DB_VARS_OK;
