@@ -53,30 +53,45 @@ function updateDateTime() {
 // ============================================================
 async function handleLogin(e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
+    const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    const btn = document.getElementById('loginBtn');
-    const errorEl = document.getElementById('loginError');
-    
+    const btn      = document.getElementById('loginBtn');
+    const errorEl  = document.getElementById('loginError');
+
     errorEl.style.display = 'none';
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-    
+
     try {
-        const res = await fetchJSON('/api/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password })
+        const response = await fetch(API + '/auth/login', {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify({ email, password })
         });
-        
-        if (res.success) {
-            authToken = res.token;
-            sessionStorage.setItem('wigoAdminToken', authToken);
-            showDashboard(res.user);
-        } else {
-            showLoginError(res.message || 'Login failed.');
+
+        // Always parse JSON — even error responses have a body
+        let data;
+        try {
+            data = await response.json();
+        } catch (_) {
+            data = { success: false, message: `Server returned status ${response.status}` };
         }
+
+        if (response.ok && data.success) {
+            authToken = data.token;
+            sessionStorage.setItem('wigoAdminToken', authToken);
+            showDashboard(data.user);
+        } else {
+            // Show the actual server error message for better diagnosis
+            const msg = data.message || `Login failed (HTTP ${response.status})`;
+            showLoginError(msg);
+            console.error('Login failed:', response.status, data);
+        }
+
     } catch (err) {
-        showLoginError('Unable to connect to server. Please try again.');
+        // Network-level error (no internet, server completely down)
+        console.error('Login network error:', err);
+        showLoginError('Cannot reach the server. Check your internet connection and try again.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';

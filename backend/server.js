@@ -95,21 +95,16 @@ app.use(cors({
 // ============================================================
 // Rate Limiting
 // ============================================================
-app.use('/api/', rateLimit({
+// General API limiter — applied to all /api/* routes
+const apiLimiter = rateLimit({
   windowMs       : 15 * 60 * 1000,
   max            : isProd ? 100 : 500,
   standardHeaders: true,
   legacyHeaders  : false,
   message        : { success: false, message: 'Too many requests. Please try again later.' }
-}));
+});
 
-app.use('/api/auth/login', rateLimit({
-  windowMs       : 15 * 60 * 1000,
-  max            : isProd ? 5 : 20,
-  standardHeaders: true,
-  legacyHeaders  : false,
-  message        : { success: false, message: 'Too many login attempts. Please wait 15 minutes.' }
-}));
+app.use('/api/', apiLimiter);
 
 // ============================================================
 // Body Parsing
