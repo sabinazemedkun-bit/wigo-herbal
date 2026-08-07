@@ -110,10 +110,12 @@ if (DB_VARS_OK) {
 }
 
 // ── Lazy connectivity test ───────────────────────────────────
+// Returns { ok: bool, error: string|null }
 async function testConnection() {
   if (!pool) {
-    console.error('❌ Cannot test — pool not created (missing env vars)');
-    return false;
+    const msg = `Pool not created — missing env vars: ${MISSING.join(', ') || 'unknown'}`;
+    console.error('❌', msg);
+    return { ok: false, error: msg };
   }
 
   let conn;
@@ -121,30 +123,24 @@ async function testConnection() {
     conn = await pool.getConnection();
     await conn.ping();
     console.log(`✅ Database connected: ${DB_HOST}:${DB_PORT_NUM}/${DB_NAME} [SSL on]`);
-    return true;
+    return { ok: true, error: null };
 
   } catch (err) {
-    console.error('❌ Database connection test failed:', err.code, err.message);
+    const errMsg = `${err.code || 'ERR'}: ${err.message}`;
+    console.error('❌ Database connection test failed:', errMsg);
 
-    if (err.code === 'ENOTFOUND') {
-      console.error(`   → Hostname "${DB_HOST}" could not be resolved.`);
-      console.error('   → Check DB_HOST in Vercel env vars — no spaces, quotes, or typos.');
-    }
-    if (err.code === 'ECONNREFUSED') {
-      console.error(`   → Connection refused at ${DB_HOST}:${DB_PORT_NUM}`);
-      console.error('   → Check DB_PORT is correct (Aiven port is usually 5-digits, e.g. 16356)');
-    }
-    if (err.code === 'ER_ACCESS_DENIED_ERROR') {
-      console.error('   → Wrong DB_USER or DB_PASSWORD');
-    }
-    if (err.code === 'ER_BAD_DB_ERROR') {
-      console.error(`   → Database "${DB_NAME}" does not exist — run: node backend/scripts/setup-db.js`);
-    }
-    if (err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET') {
-      console.error('   → Connection timed out — Aiven IP allowlist may be blocking the request.');
-      console.error('   → Set IP filter to 0.0.0.0/0 in Aiven console.');
-    }
-    return false;
+    if (err.code === 'ENOTFOUND')
+      console.error(`   → Hostname "${DB_HOST}" could not be resolved. Check DB_HOST env var.`);
+    if (err.code === 'ECONNREFUSED')
+      console.error(`   → Connection refused at ${DB_HOST}:${DB_PORT_NUM}. Check DB_PORT.`);
+    if (err.code === 'ER_ACCESS_DENIED_ERROR')
+      console.error('   → Wrong DB_USER or DB_PASSWORD.');
+    if (err.code === 'ER_BAD_DB_ERROR')
+      console.error(`   → Database "${DB_NAME}" does not exist — run setup-db.js`);
+    if (err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET')
+      console.error('   → Timed out — set Aiven IP filter to 0.0.0.0/0');
+
+    return { ok: false, error: errMsg };
 
   } finally {
     if (conn) conn.release();
