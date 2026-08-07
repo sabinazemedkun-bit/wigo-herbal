@@ -436,9 +436,55 @@
 }
 
 /* ── Stats Section overrides for about.css ───────────────── */
+.stats-section {
+    background: linear-gradient(135deg, #0B6E4F 0%, #43A047 100%);
+    padding: 4rem 0;
+}
+
 .stats-section .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
+}
+
+.stats-section .section-header h2 {
+    color: #ffffff !important;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.stats-section .section-header p {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+/* Stats grid layout */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* Each stat card */
+.stat-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.2);
 }
 
 /* Protect stat numbers and icons from global color overrides */
@@ -456,6 +502,7 @@
     font-size: 0.95rem;
     font-weight: 500;
     margin-top: 0.3rem;
+    display: block;
 }
 
 .stat-icon {
