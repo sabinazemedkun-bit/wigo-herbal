@@ -22,6 +22,27 @@ const { generateToken } = require('../middleware/auth');
 
 const SALT_ROUNDS = 12;
 
+// ── Diagnostic hint for common DB errors ────────────────────
+function getLoginHint(err) {
+  switch (err.code) {
+    case 'ENOTFOUND':
+      return 'DB_HOST could not be resolved. Check the DB_HOST env var in Vercel settings.';
+    case 'ECONNREFUSED':
+      return 'Connection refused. Check DB_HOST and DB_PORT env vars.';
+    case 'ETIMEDOUT':
+    case 'ECONNRESET':
+      return 'Connection timed out. Check Aiven IP allowlist — set to 0.0.0.0/0.';
+    case 'ER_ACCESS_DENIED_ERROR':
+      return 'Wrong DB_USER or DB_PASSWORD in Vercel env vars.';
+    case 'ER_BAD_DB_ERROR':
+      return 'Database does not exist. Check DB_NAME env var.';
+    case 'ER_NO_SUCH_TABLE':
+      return 'Table "users" not found. Run: node backend/scripts/setup-db.js';
+    default:
+      return 'Check Vercel function logs for full details.';
+  }
+}
+
 // ── Guard helpers ────────────────────────────────────────────
 function dbAvailable() {
   // pool is null when createPool failed; DB_VARS_OK is false when
@@ -115,13 +136,17 @@ async function login(req, res) {
     });
 
   } catch (err) {
-    // Log the full error so it's visible in Vercel function logs
+    // Log the full error — visible in Vercel function logs
     console.error('Login error:', err.code || '', err.message || err);
+
+    // Always return the real error details so the admin UI
+    // can display exactly what went wrong (DB connection failure,
+    // access denied, etc.) rather than a generic message.
     return res.status(500).json({
       success: false,
-      message: 'Server error during login.',
-      // Show DB error details in non-production for easier debugging
-      detail : process.env.NODE_ENV !== 'production' ? err.message : undefined
+      message: err.message || 'Server error during login.',
+      code   : err.code    || 'UNKNOWN',
+      hint   : getLoginHint(err)
     });
   }
 }

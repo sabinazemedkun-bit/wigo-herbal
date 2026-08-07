@@ -114,19 +114,19 @@ async function showDashboard(user) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'flex';
     document.body.classList.remove('login-page');
-    
+
     // Get user info if not passed
     if (!user) {
         try {
-            const res = await fetchJSON('/api/auth/profile');
+            const res = await fetchJSON(API + '/auth/profile');
             if (res.success) user = res.user;
         } catch (_) {}
     }
-    
+
     if (user) {
         document.getElementById('adminName').textContent = user.full_name || 'Admin';
     }
-    
+
     navigateTo('overview');
 }
 
@@ -189,19 +189,22 @@ function toggleSidebar() {
 async function fetchJSON(url, options = {}) {
     const headers = { 'Content-Type': 'application/json' };
     if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-    
-    const res = await fetch(url, {
+
+    // If a relative /api/... URL is passed, prefix with the API base
+    const fullUrl = url.startsWith('/api/') ? (window.location.origin + url) : url;
+
+    const res = await fetch(fullUrl, {
         ...options,
         headers: { ...headers, ...(options.headers || {}) }
     });
-    
+
     const data = await res.json();
-    
+
     if (res.status === 401) {
         logout();
         throw new Error('Session expired');
     }
-    
+
     return data;
 }
 

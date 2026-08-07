@@ -94,9 +94,12 @@ if (DB_VARS_OK) {
     });
 
     // Swallow pool-level errors — prevent uncaught exception crashes
-    pool.pool.on('error', (err) => {
-      console.error('MySQL pool error (non-fatal):', err.code, err.message);
-    });
+    // pool.pool is the underlying mysql2 Pool (promise wrapper exposes it)
+    if (pool && pool.pool && typeof pool.pool.on === 'function') {
+      pool.pool.on('error', (err) => {
+        console.error('MySQL pool error (non-fatal):', err.code, err.message);
+      });
+    }
 
     console.log(`✅ MySQL pool created → ${DB_HOST}:${DB_PORT_NUM}/${DB_NAME}`);
 

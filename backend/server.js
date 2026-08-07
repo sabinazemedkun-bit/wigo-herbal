@@ -62,8 +62,10 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   // Vercel auto-injects VERCEL_URL for the current deployment
   VERCEL_URL,
-  // Allow all *.vercel.app preview deployments
-  /\.vercel\.app$/,
+  // Explicitly allow the known production Vercel URL
+  'https://wigo-herbal.vercel.app',
+  // Allow ALL *.vercel.app preview deployments (regex on full origin)
+  /^https:\/\/[\w-]+\.vercel\.app$/,
   // Local development
   'http://localhost:5000',
   'http://localhost:3000',
