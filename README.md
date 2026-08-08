@@ -402,7 +402,7 @@ lsof -ti:5000 | xargs kill -9
 - 0976 763 030
 
 🌐 Social Media:
-- **TikTok:** @Wigolove3
+- **TikTok:** @wigolove3
 - **Instagram:** @AFEWERKABAT
 - **Facebook:** @HakimTaye
 
